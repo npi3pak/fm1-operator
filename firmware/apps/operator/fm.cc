@@ -62,7 +62,7 @@ const uint8_t MODS[FM_ALGOS][FM_OPS] = {
 };
 const uint8_t CARRIERS[FM_ALGOS] = {0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x5, 0x3, 0x7, 0x7, 0xF};
 
-enum { EV_OFF, EV_ON, EV_ALL_OFF };
+enum { EV_OFF, EV_ON, EV_ALL_OFF, EV_KILL };
 enum { ST_IDLE, ST_ATTACK, ST_DECAY, ST_SUSTAIN, ST_LOOP, ST_RELEASE, ST_DONE };
 
 struct Env {
@@ -478,6 +478,15 @@ void drain_events(const fm_patch_t* p) {
             for (uint32_t i = 0; i < FM_VOICES_MAX; i++)
                 voices[i].gate = 0;
         }
+        if (kind == EV_KILL) {
+            held_n = 0;
+            for (uint32_t i = 0; i < FM_VOICES_MAX; i++) {
+                voices[i].gate = 0;
+                voices[i].active = 0;
+                for (uint32_t e = 0; e < FM_ENVS; e++)
+                    voices[i].env[e].stage = ST_IDLE;
+            }
+        }
     }
 }
 
@@ -836,6 +845,8 @@ extern "C" void fm_note_on(uint8_t note, uint8_t velocity) { push_event(EV_ON, n
 extern "C" void fm_note_off(uint8_t note) { push_event(EV_OFF, note, 0); }
 
 extern "C" void fm_all_notes_off(void) { push_event(EV_ALL_OFF, 0, 0); }
+
+extern "C" void fm_kill_all(void) { push_event(EV_KILL, 0, 0); }
 
 extern "C" void fm_controller(uint32_t source, int32_t value) {
     if (source == SRC_BEND)

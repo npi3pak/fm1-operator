@@ -34,7 +34,7 @@ The oscillators keep Live's colours: A yellow, B cyan, C blue, D orange.
 | **SELECT** | Moves the focus between the page's groups |
 | **ALGO** | The object of the page: the oscillator on EDIT, the envelope on ENV, the MIDI source on GLO. On HOME it picks the algorithm |
 | **K1–K4** | The four parameters of the focused group. Turning faster takes bigger steps |
-| **PRESET** | Presets: Init and Operator's factory presets (by category: Ambient & Evolving, Bass, Brass, …), then the user slots (`U1`…). They load at once |
+| **PRESET** | Presets: Init and Operator's factory presets (by category: Ambient & Evolving, Bass, Brass, …), then the user slots (`U1`…). They load at once and cut the sound: every voice stops |
 | **SAVE** | Opens the save page; press it again there to write |
 | **OCT− / OCT+** | Keyboard octave, −3…+3 |
 | MASTER | Volume |
@@ -47,7 +47,7 @@ System combinations:
 
 ### HOME: the oscillators
 
-One row per oscillator, like the left half of Operator's shell:
+One row per oscillator, like the left half of Operator's shell: D at the top, A at the bottom.
 - **Coarse** and **Fine**, or **Freq** and **Multi** when the oscillator is fixed;
 - the **Fixed** toggle;
 - **Level**;
@@ -57,8 +57,8 @@ One row per oscillator, like the left half of Operator's shell:
 
 | Step | K1 | K2 | K3 |
 |---|---|---|---|
-| A Tune, B Tune… | Coarse (Freq) | Fine (Multi) | Fixed |
-| A Level, B Level… | Level | Oscillator on/off | |
+| D Tune, C Tune… | Coarse (Freq) | Fine (Multi) | Fixed |
+| D Level, C Level… | Level | Oscillator on/off | |
 
 **ALGO** picks the algorithm (1–11) and shows it over the rows for a moment: modulators sit above the oscillators
 they modulate, and the carriers feed the line at the bottom. GLO shows it too.

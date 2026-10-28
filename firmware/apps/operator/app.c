@@ -104,7 +104,8 @@ typedef char store_fits[sizeof(store_t) <= FW_STORE_MAX ? 1 : -1];
     {name " Level", W_ALL, {OSCK(k, "Level", level, F_DB, -7000, 0, 50), OSCK(k, "Osc " name, on, F_ONOFF, 0, 1, 1), \
                             NONE, NONE}}
 
-static const group_t G_HOME[] = {HOME_ROW(0, "A"), HOME_ROW(1, "B"), HOME_ROW(2, "C"), HOME_ROW(3, "D")};
+/* as in Operator's shell: D at the top, A at the bottom */
+static const group_t G_HOME[] = {HOME_ROW(3, "D"), HOME_ROW(2, "C"), HOME_ROW(1, "B"), HOME_ROW(0, "A")};
 
 static const group_t G_OSC[] = {
     {"Tune", W_ALL, {OSC("Coarse", coarse, F_RATIO, 0, 48, 1), OSC("Fine", fine, F_INT, 0, 1000, 1),
@@ -313,6 +314,7 @@ static void store_load(void)
 static void preset_select(uint32_t i)
 {
     preset = i % PRESETS_N;
+    fm_kill_all();
     fm1_irq_off();
     patch = *preset_source(preset);
     fm1_irq_on();
@@ -952,11 +954,12 @@ static void home_knob(const pdef_t *d, uint32_t k, int32_t cx, int focused, uint
 }
 
 /* HOME: one oscillator per row, as in Operator's shell: Coarse, Fine, Fixed, Level and the oscillator's square */
-static void draw_home_row(uint32_t k)
+static void draw_home_row(uint32_t row)
 {
+    const uint32_t k = FM_OPS - 1u - row;
     const fm_osc_t *o = &patch.osc[k];
     const uint32_t f = focus[PAGE_HOME];
-    const int tune = f == 2u * k, level = f == 2u * k + 1u;
+    const int tune = f == 2u * row, level = f == 2u * row + 1u;
     const uint16_t bg_tune = tune ? C_BODY_FOCUS : C_BODY, bg_level = level ? C_BODY_FOCUS : C_BODY;
     const uint16_t sq = o->on ? OP_COLOR[k] : C_CONTROL;
     cv_begin(240, HOME_ROW_H, C_BODY);
@@ -967,13 +970,13 @@ static void draw_home_row(uint32_t k)
         cv_rect(0, 0, 2, HOME_ROW_H - 1, C_ORANGE);
     if (level)
         cv_rect(144, 0, 2, HOME_ROW_H - 1, C_ORANGE);
-    home_knob(cell(PAGE_HOME, 2u * k, 0), k, 28, tune, bg_tune);
-    home_knob(cell(PAGE_HOME, 2u * k, 1), k, 74, tune, bg_tune);
+    home_knob(cell(PAGE_HOME, 2u * row, 0), k, 28, tune, bg_tune);
+    home_knob(cell(PAGE_HOME, 2u * row, 1), k, 74, tune, bg_tune);
     draw_toggle(100, 16, 38, 17, "Fixed", o->fixed != 0, C_ORANGE);
-    home_knob(cell(PAGE_HOME, 2u * k + 1u, 0), k, 174, level, bg_level);
+    home_knob(cell(PAGE_HOME, 2u * row + 1u, 0), k, 174, level, bg_level);
     cv_rect(205, 12, 26, 24, sq);
     text_center(218, 16, &FONT_M, OP_NAME[k], o->on ? C_INK : C_OFF, sq);
-    cv_blit(0, (uint32_t)(HOME_Y + (int32_t)k * HOME_ROW_H));
+    cv_blit(0, (uint32_t)(HOME_Y + (int32_t)row * HOME_ROW_H));
 }
 
 /* turning ALGO on HOME shows the algorithm over the rows for a moment */

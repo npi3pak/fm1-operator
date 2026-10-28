@@ -117,6 +117,7 @@ void fm_render(const fm_patch_t *p, const fm_global_t *g, int32_t *lr, uint32_t 
 void fm_note_on(uint8_t note, uint8_t velocity);
 void fm_note_off(uint8_t note);
 void fm_all_notes_off(void);
+void fm_kill_all(void);                                /* silence at once: a preset change */
 void fm_controller(uint32_t source, int32_t value);  /* SRC_AFTERTOUCH / SRC_WHEEL 0 .. 127, SRC_BEND -8192 .. 8191 */
 void fm_set_voice_cap(uint32_t n);
 void fm_patch_loaded(const fm_patch_t *p);           /* rebuilds the user waveforms; main loop only */
