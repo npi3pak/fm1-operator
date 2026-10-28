@@ -18,9 +18,13 @@ platform cut down from dspaudio/orbit (GPL-3.0-only), the same platform as npi3p
   `fm.cc` (marked "calibrated by ear against Live later").
 - Presets: `tools/oppreset.py` converts .adv (and our JSON) to fm.h's units; `firmware/apps/operator/gen.py` builds
   `build/gen/op_bank.h` (the read-only bank) from `presets/bank.txt` (`OP_BANK=list` overrides it for local tests).
-  Never commit or ship Ableton's factory presets; they may be converted locally to test the engine.
+  The bank is Init plus Operator's 331 factory presets from Live 12's Core Library, converted to JSON in
+  `presets/ableton/<category>/` (the user's decision, 2026-10-28: OPERATOR is a reworked synth inspired by Operator).
+  Regenerate them with the conversion in `project analize.md` §9 when the converter's units change.
   User slots: `store_t` in app.c, `USER_PER_SLOT` presets per storage slot; bump `STORE_VERSION` when `fm_patch_t`
   changes.
+- `FM_VOICES_MAX` is 6: the most the FM-1 plays (the user's test on the hardware, 2026-10-28). Presets keep Operator's
+  `Voices` (1–32); the engine plays min(that, 6, the CPU cap).
 - C has no float: the display converts with integer tables (`pow2m`); the engine's own maths stays in fm.cc.
 - Do not use Ableton's name or logo in the product's look; in texts say "inspired by Ableton Live's Operator" and
   "not affiliated with or endorsed by Ableton".

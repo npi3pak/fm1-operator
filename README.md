@@ -29,7 +29,7 @@ same options. It is an independent project, not affiliated with or endorsed by A
   feedback, phase; 11 algorithms
 - 7 envelopes (4 oscillators, filter, pitch, LFO) with Loop, Beat, Sync and Trigger modes, the global Time
 - LFO up to audio rate, pitch envelope, filter (LP, HP, BP, notch, morph; 12 / 24 dB) and waveshaper
-- up to 32 voices (fewer when the CPU runs short), Spread (a stereo voice pair), glide, MIDI routing for velocity,
+- up to 6 voices (presets keep Operator's 1–32), Spread (a stereo voice pair), glide, MIDI routing for velocity,
   key, aftertouch, pitch bend and the mod wheel
 - a read-only preset bank in the firmware and user slots in flash; USB-MIDI and TRS MIDI in; 48 kHz audio
 
@@ -86,6 +86,9 @@ OPERATOR is made by [npi3pak](https://github.com/npi3pak). It stands on the work
 - **Charles Vestal**: [AMB-1](https://github.com/charlesvestal/fm1-amb), which showed the FPU in use on the FM-1.
 - **Dimitar Toshkov Zhekov**: the Terminus font (SIL OFL 1.1).
 - **IBM**: the IBM Plex Sans font (SIL OFL 1.1).
+- **Ableton**: the preset bank is Operator's factory presets from Ableton Live 12's Core Library, converted to
+  OPERATOR's parameters (`presets/ableton/`). Ableton and Operator are Ableton AG's; OPERATOR is not affiliated with
+  or endorsed by Ableton.
 - **JieLi Technology**: three AC79 SDK files in every package (Apache-2.0).
 
 ## License

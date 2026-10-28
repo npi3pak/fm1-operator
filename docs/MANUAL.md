@@ -34,7 +34,7 @@ The oscillators keep Live's colours: A yellow, B cyan, C blue, D orange.
 | **SELECT** | Moves the focus between the page's groups |
 | **ALGO** | The object of the page: the oscillator on EDIT, the envelope on ENV, the MIDI source on GLO. On HOME it picks the algorithm |
 | **K1–K4** | The four parameters of the focused group. Turning faster takes bigger steps |
-| **PRESET** | Presets: the bank in the firmware first, then the user slots (`U1`…). They load at once |
+| **PRESET** | Presets: Init and Operator's factory presets (by category: Ambient & Evolving, Bass, Brass, …), then the user slots (`U1`…). They load at once |
 | **SAVE** | Opens the save page; press it again there to write |
 | **OCT− / OCT+** | Keyboard octave, −3…+3 |
 | MASTER | Volume |
@@ -48,14 +48,20 @@ System combinations:
 ### HOME: the oscillators
 
 One row per oscillator, like the left half of Operator's shell:
-- **the oscillator's square**: lit when it is on;
-- **Coarse** and **Fine** dials, or **Freq** and **Multi** when the oscillator is fixed;
+- **Coarse** and **Fine**, or **Freq** and **Multi** when the oscillator is fixed;
 - the **Fixed** toggle;
-- **Level**, with its bar and whether the oscillator is a carrier or a modulator.
+- **Level**;
+- the oscillator's square on the right, lit when it is on.
 
-**SELECT** picks the column (On, Coarse, Fine, Fixed, Level); **K1–K4** set it for A, B, C and D. **ALGO** picks the
-algorithm (1–11) and shows it over the rows for a moment: modulators sit above the oscillators they modulate, and
-the carriers feed the line at the bottom. GLO shows it too.
+**SELECT** moves down the rows, two steps per oscillator; the lit half of the row is what K1–K4 edit:
+
+| Step | K1 | K2 | K3 |
+|---|---|---|---|
+| A Tune, B Tune… | Coarse (Freq) | Fine (Multi) | Fixed |
+| A Level, B Level… | Level | Oscillator on/off | |
+
+**ALGO** picks the algorithm (1–11) and shows it over the rows for a moment: modulators sit above the oscillators
+they modulate, and the carriers feed the line at the bottom. GLO shows it too.
 
 ### EDIT: one oscillator (ALGO: A–D)
 
@@ -144,8 +150,9 @@ On GLOBAL:
 | PAN | Pan<Key | Pan<Random | Interpolation | Antialias |
 | DEVICE | MIDI channel | Tuning | Tempo | |
 
-**Voices**: when the CPU runs short, the synth plays fewer voices than the preset asks for: it takes the oldest
-note. The status line shows how many are available.
+**Voices**: the FM-1 plays at most 6. A preset may ask for up to 32, as in Operator, and keeps that number, but
+the synth plays no more than 6, and fewer when the CPU runs short: a new note then takes the oldest one. The status
+line shows how many are available.
 
 **DEVICE**: these settings belong to the FM-1, not to the preset.
 

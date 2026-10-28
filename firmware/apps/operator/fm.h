@@ -20,7 +20,7 @@ extern "C" {
 #define FM_WAVES 23
 #define FM_HARMONICS 64
 #define FM_NAME_LEN 32
-#define FM_VOICES_MAX 32
+#define FM_VOICES_MAX 6     /* what the FM-1 plays (the user's test, 2026-10-28); presets keep Operator's 1..32 */
 #define FM_SOURCES 5
 #define FM_DESTS 24
 #define FM_ENVS 7

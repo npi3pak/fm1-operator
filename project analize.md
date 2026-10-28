@@ -727,3 +727,25 @@ Decided:
 - Below it are Live-style controls: dials with an arc, orange toggles, choosers.
 
 **Font**: IBM Plex Sans Medium (SIL OFL 1.1), 11 and 13 px, for labels, values and the name.
+
+### After the test on the FM-1 (2026-10-28)
+
+- **Polyphony**: the FM-1 handles at most **6 voices**, so `FM_VOICES_MAX` = 6. Presets keep `Voices` 1–32 for compatibility.
+- **HOME**
+  - The oscillator square is on the right of each row.
+  - Level is a dial.
+  - SELECT walks the rows, two steps per oscillator: Tune (Coarse, Fine, Fixed), then Level (Level, on/off).
+
+### The preset bank (2026-10-28)
+
+**Decision**: the bank is Live's own Operator presets. The reason: OPERATOR is a reworked synth inspired by Operator,
+not an exact copy.
+- `presets/ableton/<category>/<name>.json` holds the 331 factory presets from Live 12.4's Core Library, converted
+  by `tools/oppreset.py`. Their names are taken from the file names.
+- `presets/bank.txt` lists Init, then the presets by category.
+- Our own test presets have been removed.
+- The image is about 436 KB, which fits the 568 KB slot.
+
+**To regenerate after a change to the converter's units**:
+for every `.adv` under `Core Library/Devices/Instruments/Operator`, run `oppreset.load_adv()`, set
+`name = file stem`, and write the result as JSON into `presets/ableton/<parent folder>/`.

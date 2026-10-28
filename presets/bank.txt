@@ -1,10 +1,334 @@
 # The read-only presets compiled into the firmware, in this order (tools/oppreset.py reads .adv and .json).
-# Only presets we may distribute: our own, or ones whose authors agreed. Not Ableton's library.
+# Operator's factory presets from Ableton Live 12's Core Library, converted to OPERATOR's units.
 init.json
-fm-piano.json
-glass-bell.json
-stack-bass.json
-soft-brass.json
-spread-pad.json
-noise-hat.json
-fixed-kick.json
+ableton/Ambient & Evolving/Bells & Thin Pad.json
+ableton/Ambient & Evolving/Detuned Broad Pad.json
+ableton/Ambient & Evolving/Detuned Instable Pad.json
+ableton/Ambient & Evolving/Detuned Sustain Pad.json
+ableton/Ambient & Evolving/Dynamic Inharmonics.json
+ableton/Ambient & Evolving/Fizzling Pad.json
+ableton/Ambient & Evolving/Grow & Shine.json
+ableton/Ambient & Evolving/High & Low.json
+ableton/Ambient & Evolving/Metallic FM.json
+ableton/Ambient & Evolving/Noisy Fourth Beat Pad.json
+ableton/Ambient & Evolving/Noisy Triple Beat Pad.json
+ableton/Ambient & Evolving/Resonant Pad.json
+ableton/Ambient & Evolving/Square Sweep.json
+ableton/Bass/Acid Bass.json
+ableton/Bass/Azimuth Bass.json
+ableton/Bass/Creep Bass.json
+ableton/Bass/Detuned Attack Bass.json
+ableton/Bass/Detuned Lowpass Bass.json
+ableton/Bass/Disto FM Bass.json
+ableton/Bass/Distortion Bright Bass.json
+ableton/Bass/Distortion Filtered Bass.json
+ableton/Bass/Dynamic Filter Bass.json
+ableton/Bass/Dynamic Harmonics Bass.json
+ableton/Bass/Electric FM Fuzz Bass.json
+ableton/Bass/Electric FM Muffled Bass.json
+ableton/Bass/Electric FM Wow Bass.json
+ableton/Bass/Face Bass.json
+ableton/Bass/Fast Filter Attack Bass.json
+ableton/Bass/Growl Bass.json
+ableton/Bass/Guitar Bass.json
+ableton/Bass/Harsh FM Bass.json
+ableton/Bass/House Bass.json
+ableton/Bass/Housy Bass.json
+ableton/Bass/Juicy Ladder Bass.json
+ableton/Bass/King Bass.json
+ableton/Bass/Metallic Basic Bass.json
+ableton/Bass/Metallic Mallet Bass.json
+ableton/Bass/Neaww Bass.json
+ableton/Bass/OP Bass.json
+ableton/Bass/Organ Bass.json
+ableton/Bass/Release Bass.json
+ableton/Bass/Selekta Bass.json
+ableton/Bass/Short Decay Saw Bass.json
+ableton/Bass/Short Decay Sine Bass.json
+ableton/Bass/Short Decay Wah Bass.json
+ableton/Bass/Sinelike Basic Bass.json
+ableton/Bass/Sneaky Bass.json
+ableton/Bass/Sneaky Sync Bass.json
+ableton/Bass/Sub Clicky Bass.json
+ableton/Bass/Sub Sine Bass.json
+ableton/Bass/Sweep Flange Bass.json
+ableton/Bass/Sweep Slow Bass.json
+ableton/Bass/Sweep Unison Bass.json
+ableton/Bass/Three Op Bass.json
+ableton/Bass/WahWah Bass.json
+ableton/Bass/Wobbly Flag Bass.json
+ableton/Bass/Wurp Bass.json
+ableton/Brass/Analog Bouquet Brass.json
+ableton/Brass/Azimuth Brass.json
+ableton/Brass/Bright Brass.json
+ableton/Brass/Plain & Simple Brass.json
+ableton/Brass/Release Brass.json
+ableton/Brass/Slight Vibrato Brass.json
+ableton/Brass/Soft 5ths Brass.json
+ableton/Brass/Soft FM Sweep Brass.json
+ableton/Brass/Soft Warm Brass.json
+ableton/Brass/Sweep Chorus Brass.json
+ableton/Components/Low Pass Filter.json
+ableton/Components/Noise Hit Attack.json
+ableton/Components/Saw 3 Waveforms.json
+ableton/Components/Short Metallic Spectral.json
+ableton/Components/Sine Blip Attack.json
+ableton/Components/Sine Blip Filter Attack.json
+ableton/Components/Sine Mono Glide Waveforms.json
+ableton/Components/Sine Notch Sweep Waveforms.json
+ableton/Components/Sine Waveforms.json
+ableton/Components/Square 16 Waveforms.json
+ableton/Components/Square 3 Waveforms.json
+ableton/Components/Square 32 Waveforms.json
+ableton/Components/Square 4 Waveforms.json
+ableton/Components/Square 6 Waveforms.json
+ableton/Components/Square 64 Waveforms.json
+ableton/Components/Square 8 Waveforms.json
+ableton/Components/Square D Waveforms.json
+ableton/Components/Triangle Waveforms.json
+ableton/Effects/Basscycle Aftertouch.json
+ableton/Effects/Drip.json
+ableton/Effects/Dub Filter FX.json
+ableton/Effects/Flutter Ambience.json
+ableton/Effects/Gnarly S&H Filter.json
+ableton/Effects/Pitchy Gong.json
+ableton/Effects/Rhythmic Bells & Noise.json
+ableton/Effects/S&H Filtered Noise.json
+ableton/Effects/Squeek & Loop Bleep.json
+ableton/Effects/Squishy Bleep.json
+ableton/Effects/Sweep & Wobble.json
+ableton/Effects/Sweep Pitch FX.json
+ableton/Effects/Sweeping SciFi Cymbals.json
+ableton/Effects/Swooshy.json
+ableton/Effects/Tesseract Pitch Fall.json
+ableton/Effects/Tesseract Unpredictable Velocity.json
+ableton/Effects/Wind Machine.json
+ableton/Guitar & Plucked/12 String Guitar.json
+ableton/Guitar & Plucked/Delay Bleep Pluck.json
+ableton/Guitar & Plucked/FM Basic Pluck.json
+ableton/Guitar & Plucked/FM Koto.json
+ableton/Guitar & Plucked/FM Sitar.json
+ableton/Guitar & Plucked/Harp Plastic.json
+ableton/Guitar & Plucked/Kototar.json
+ableton/Guitar & Plucked/Perc Blip Bleep.json
+ableton/Guitar & Plucked/Pitchy Release Pluck.json
+ableton/Guitar & Plucked/Power Chords Guitar.json
+ableton/Guitar & Plucked/Rubber Pluck.json
+ableton/Guitar & Plucked/Suitar Guitar.json
+ableton/Mallets/Bells Brushed Hits.json
+ableton/Mallets/Bells Classic Basic.json
+ableton/Mallets/Bells Classic Bright.json
+ableton/Mallets/Bells Classic Muffled.json
+ableton/Mallets/Bells Damped.json
+ableton/Mallets/Bells Fifths.json
+ableton/Mallets/Bells FM Simple.json
+ableton/Mallets/Bells Leslie.json
+ableton/Mallets/Bells Noisy Attack.json
+ableton/Mallets/Bells Pitch Mod.json
+ableton/Mallets/Bells Plain Octaves.json
+ableton/Mallets/Bells Rattling.json
+ableton/Mallets/Bells Sun.json
+ableton/Mallets/Bells Tinkle Dry.json
+ableton/Mallets/Bells Tinkle Fine.json
+ableton/Mallets/Bells Tinkle Noisy.json
+ableton/Mallets/Bells Tinkle Rich.json
+ableton/Mallets/Bells Tinkle Toy.json
+ableton/Mallets/Bells Vibrant.json
+ableton/Mallets/Glockenspiel Tremolo.json
+ableton/Mallets/Kalimba Plastic.json
+ableton/Mallets/Marimba Long.json
+ableton/Mallets/Marimba Plastic.json
+ableton/Mallets/Marimba Wood.json
+ableton/Mallets/Metallic Dynamic.json
+ableton/Mallets/Metallic Hit.json
+ableton/Mallets/Tin Bowl.json
+ableton/Mallets/Tubular Bells.json
+ableton/Mallets/Vibes Pure.json
+ableton/Mallets/Vibraphone Plastic.json
+ableton/Mallets/Wineglass High Pass.json
+ableton/Piano & Keys/Celesta Sustained.json
+ableton/Piano & Keys/Clav Filtered.json
+ableton/Piano & Keys/Clav Lo Fi .json
+ableton/Piano & Keys/FM Harpsichord.json
+ableton/Piano & Keys/FM Piano Bright.json
+ableton/Piano & Keys/FM Piano Classic.json
+ableton/Piano & Keys/FM Piano Decay.json
+ableton/Piano & Keys/FM Piano Dirty.json
+ableton/Piano & Keys/FM Piano Filtered.json
+ableton/Piano & Keys/FM Piano Rubber.json
+ableton/Piano & Keys/FM Piano Simple.json
+ableton/Piano & Keys/Nasal Tines.json
+ableton/Piano & Keys/Organ Basic.json
+ableton/Piano & Keys/Organ Clicky.json
+ableton/Piano & Keys/Organ Clicky Sine.json
+ableton/Piano & Keys/Organ Dance.json
+ableton/Piano & Keys/Organ Formant.json
+ableton/Piano & Keys/Organ Plucky.json
+ableton/Piano & Keys/Organ Slow Decay.json
+ableton/Piano & Keys/Organ Stereo.json
+ableton/Synth Keys/Buzz Release Keys.json
+ableton/Synth Keys/Chord FM Keys.json
+ableton/Synth Keys/Chord Mod Keys 1.json
+ableton/Synth Keys/Chord Mod Keys 2.json
+ableton/Synth Keys/Distorted Keys.json
+ableton/Synth Keys/Dynamic Buzz Keys.json
+ableton/Synth Keys/Dynamic Pitch Keys.json
+ableton/Synth Keys/Harsh Keys.json
+ableton/Synth Keys/Inharmonic Release Keys.json
+ableton/Synth Keys/Nasal Chorus Keys.json
+ableton/Synth Keys/Nebulae Keys.json
+ableton/Synth Keys/Percussive Keys.json
+ableton/Synth Keys/Plucked Keys.json
+ableton/Synth Keys/Poly Release Keys.json
+ableton/Synth Keys/Recorder Keys.json
+ableton/Synth Keys/Tremolo Synth Piano.json
+ableton/Synth Keys/Warm Chime Keys.json
+ableton/Synth Lead/Agenda Lead.json
+ableton/Synth Lead/Atom Lead.json
+ableton/Synth Lead/Bright Overtone Lead.json
+ableton/Synth Lead/Buzz Aftertouch Noise Lead.json
+ableton/Synth Lead/Buzz Overtones Lead.json
+ableton/Synth Lead/Buzz Sweep Lead.json
+ableton/Synth Lead/Filterless Sweep Lead.json
+ableton/Synth Lead/FM Filterless Sweep Lead.json
+ableton/Synth Lead/FM Glide Lead.json
+ableton/Synth Lead/FM Harpsichord Lead.json
+ableton/Synth Lead/FM Shimmering Release Lead.json
+ableton/Synth Lead/FM Short Lead.json
+ableton/Synth Lead/LoFi Sines Lead.json
+ableton/Synth Lead/Major 3rd Lead.json
+ableton/Synth Lead/Minor 7th Chord Lead.json
+ableton/Synth Lead/Nasal Formant Lead.json
+ableton/Synth Lead/One Harmonic Bleep.json
+ableton/Synth Lead/Sax Lead.json
+ableton/Synth Lead/Sine Noise Attack Lead.json
+ableton/Synth Lead/Sine Vibrato Lead.json
+ableton/Synth Lead/Square Dirty Lead.json
+ableton/Synth Lead/Square Filter Sweep Lead.json
+ableton/Synth Lead/Square Glide Lead.json
+ableton/Synth Lead/Sweep Rhythmic Lead.json
+ableton/Synth Lead/Sweep Upwards Lead.json
+ableton/Synth Lead/Syncy Lead.json
+ableton/Synth Lead/Thin Buzz Motion Lead.json
+ableton/Synth Lead/Unison Filter Velo Lead.json
+ableton/Synth Lead/Unison FM Lead.json
+ableton/Synth Lead/Unison Saw Lead.json
+ableton/Synth Lead/Unison Square Lead.json
+ableton/Synth Lead/Wow Attack Lead.json
+ableton/Synth Lead/Wow Vibrato.json
+ableton/Synth Pad/5ths Detuned Pad.json
+ableton/Synth Pad/5ths Filter Sweep Pad.json
+ableton/Synth Pad/5ths Glass Motion Pad.json
+ableton/Synth Pad/Analog Slow Sweep Pad.json
+ableton/Synth Pad/Bell String Detuned Pad.json
+ableton/Synth Pad/Bright Filterless Sweep Pad.json
+ableton/Synth Pad/Buzz Reso Stereo Pad.json
+ableton/Synth Pad/Buzz Slow Motion Pad.json
+ableton/Synth Pad/Buzz Slow Sweep Pad.json
+ableton/Synth Pad/Buzz Wide Motion Pad.json
+ableton/Synth Pad/Chorus & Strings Sweep Pad.json
+ableton/Synth Pad/Cut Pad.json
+ableton/Synth Pad/Filtered Style Pad.json
+ableton/Synth Pad/Fog Pad.json
+ableton/Synth Pad/Fuzz Pad.json
+ableton/Synth Pad/Glass Detuned Fast Attack Pad.json
+ableton/Synth Pad/Glass Thin Pad.json
+ableton/Synth Pad/Glass Thin Pure Pad.json
+ableton/Synth Pad/Glass Unpitched Pad.json
+ableton/Synth Pad/Glass Vibrato Pad.json
+ableton/Synth Pad/Glass Wah Pad.json
+ableton/Synth Pad/Highpass Sweep Pad.json
+ableton/Synth Pad/Hollow Reso Pad.json
+ableton/Synth Pad/Hollow Sweep Pad.json
+ableton/Synth Pad/Muted Chorus Pad.json
+ableton/Synth Pad/Muted Motion Pad.json
+ableton/Synth Pad/Muted Noise Sweep Pad.json
+ableton/Synth Pad/Muted Soft Shimmer Pad.json
+ableton/Synth Pad/Muted Upper Sweep Pad.json
+ableton/Synth Pad/Nasal Pitch Scoop Pad.json
+ableton/Synth Pad/Noise Slow Sweep Pad.json
+ableton/Synth Pad/Orchestral Sweep Pad.json
+ableton/Synth Pad/Pitch Attack Pad.json
+ableton/Synth Pad/Poly Detuned Pad.json
+ableton/Synth Pad/Pure Muted Pad.json
+ableton/Synth Pad/Pure Reso Sweep Pad.json
+ableton/Synth Pad/Reso Envelope Pad.json
+ableton/Synth Pad/Resonant Sweep Pad.json
+ableton/Synth Pad/Sandy Pad.json
+ableton/Synth Pad/Slow Sweep Pad.json
+ableton/Synth Pad/Soft Shimmer Filter Sweep Pad.json
+ableton/Synth Pad/Square Reso Pad.json
+ableton/Synth Pad/Still Sky Pad.json
+ableton/Synth Pad/Strings 5ths Pad.json
+ableton/Synth Pad/Strings Basis Pad.json
+ableton/Synth Pad/Strings Filter Pad.json
+ableton/Synth Pad/Strings Keys Attack Pad.json
+ableton/Synth Pad/Strings Vibrato Pad.json
+ableton/Synth Pad/Swept Organ Pad.json
+ableton/Synth Pad/Thick Organ Pad.json
+ableton/Synth Pad/Thin Buzz Fast Attack Pad.json
+ableton/Synth Pad/Thin Pad Filter Sweep.json
+ableton/Synth Pad/Tine Pad.json
+ableton/Synth Pad/Toy Glass Pad.json
+ableton/Synth Pad/Toy Keys Attack Pad.json
+ableton/Synth Pad/Vintage Sampler Noise Pad.json
+ableton/Synth Pad/Vocal Choral Muted Pad.json
+ableton/Synth Pad/Vocal Choral Stereo Sweep Pad.json
+ableton/Synth Pad/Vocal Motion Filter Sweep Pad.json
+ableton/Synth Pad/Vocal Vowel Slow Sweep Pad.json
+ableton/Synth Pad/Warble Rhythm Noise Pad.json
+ableton/Synth Pad/World Scape Pad.json
+ableton/Synth Percussion/Analog HiHat Bleep.json
+ableton/Synth Percussion/BD 1 Kick.json
+ableton/Synth Percussion/E-Ride Cymbal Bell.json
+ableton/Synth Percussion/Geigerzaehler Bleep.json
+ableton/Synth Percussion/Noise Perc Percussion.json
+ableton/Synth Percussion/Noisy Wood Percussion.json
+ableton/Synth Percussion/Q Thud Hi.json
+ableton/Synth Percussion/Shout Cowbell Percussion.json
+ableton/Synth Percussion/Smack Kick.json
+ableton/Synth Percussion/Wood Percussion.json
+ableton/Synth Percussion/Zapp Kick.json
+ableton/Synth Rhythmic/Buzz Bass 16ths.json
+ableton/Synth Rhythmic/Buzz Lead 4ths.json
+ableton/Synth Rhythmic/Full Perc Pluck 16ths.json
+ableton/Synth Rhythmic/Hollow Synth 16ths.json
+ableton/Synth Rhythmic/Klong Bass Machine.json
+ableton/Synth Rhythmic/Metal Pluck 8ths.json
+ableton/Synth Rhythmic/Noisy Keys Machine.json
+ableton/Synth Rhythmic/Pure Bell 8ths.json
+ableton/Synth Rhythmic/Rhythmic Bass & Bell.json
+ableton/Synth Rhythmic/Rhythmic Bass & Hihat Basic.json
+ableton/Synth Rhythmic/Rhythmic Bass & Hihat Sweep.json
+ableton/Synth Rhythmic/Rhythmic Bass & Perc Full.json
+ableton/Synth Rhythmic/Rhythmic Pong Bass.json
+ableton/Synth Rhythmic/Rhythmic SciFi Pluck.json
+ableton/Synth Rhythmic/Rhythmic Square Synth Buzz.json
+ableton/Synth Rhythmic/Rhythmic Sweep Synth Buzz.json
+ableton/Synth Rhythmic/Rhythmic Synth Buzz.json
+ableton/Synth Rhythmic/Rhythmic Tines Pad.json
+ableton/Synth Rhythmic/Rhythmic Wow Bass.json
+ableton/Synth Rhythmic/SciFi Machine.json
+ableton/Synth Rhythmic/Synth Buzz 8ths.json
+ableton/Synth Rhythmic/Synth Reso Buzz 16ths.json
+ableton/Synth Rhythmic/Synth Reso Sweep 16ths.json
+ableton/Synth Rhythmic/Thin Perc 8ths.json
+ableton/Synth Voices/Choir Metal Bright.json
+ableton/Synth Voices/Choir Metal Muted.json
+ableton/Synth Voices/Choir Reverb.json
+ableton/Synth Voices/Choir Steam.json
+ableton/Synth Voices/Portamento Female Nasal.json
+ableton/Synth Voices/Portamento Female Pure.json
+ableton/Synth Voices/Portamento Male.json
+ableton/Synth Voices/Solo Female Fast Att.json
+ableton/Synth Voices/Solo Female Long Rel.json
+ableton/Synth Voices/Solo Female Reso.json
+ableton/Synth Voices/Solo Male Fast Attack.json
+ableton/Synth Voices/Solo Male Metal Echo.json
+ableton/Winds/Flute Basic.json
+ableton/Winds/Flute Double.json
+ableton/Winds/Flute Hard.json
+ableton/Winds/Flute Mellow.json
+ableton/Winds/Ocarina Basic.json
+ableton/Winds/Pan Flute Basic.json
+ableton/Winds/Whistler Winds.json

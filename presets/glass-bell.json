@@ -1,8 +1,0 @@
-{"name": "Glass Bell",
- "main": {"algorithm": 6, "voices": 9, "volume": -1400},
- "filter": {"on": 0},
- "osc": [
-  {"level": 0, "env": {"decay": 4900, "sustain": -7000, "release": 4600}},
-  {"level": -900, "coarse": 3, "fine": 500, "vel_scale": 700, "env": {"decay": 4400, "sustain": -7000, "release": 4300}},
-  {"level": -600, "coarse": 2, "env": {"decay": 4700, "sustain": -7000, "release": 4600}},
-  {"level": -1500, "coarse": 7, "fine": 100, "vel_scale": 700, "env": {"decay": 4000, "sustain": -7000, "release": 4000}}]}

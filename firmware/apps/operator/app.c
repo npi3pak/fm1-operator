@@ -51,7 +51,7 @@
 #define C_INK RGB(0x07, 0x07, 0x07)
 
 enum { PAGE_HOME, PAGE_OSC, PAGE_ENV, PAGE_LFO, PAGE_FILTER, PAGE_PITCH, PAGE_GLOBAL, PAGE_SAVE, PAGES };
-enum { B_NONE, B_OSC, B_OSCN, B_ENV, B_FILTER, B_LFO, B_PITCH, B_MAIN, B_ROUTE, B_DEV, B_HARM_SEL, B_HARM };
+enum { B_NONE, B_OSC, B_OSCN, B_ENV, B_FILTER, B_LFO, B_PITCH, B_MAIN, B_ROUTE, B_DEV, B_HARM_SEL, B_HARM, B_OSC_A };
 enum {
     F_INT, F_ONOFF, F_DB, F_TIME, F_RATIO, F_WAVE, F_HZ10, F_MULTI, F_PCT, F_PCTU, F_INDEX, F_HARM, F_PARTIALS,
     F_ENVLVL, F_LOOP, F_BEAT, F_SLOPE, F_LFOTYPE, F_RANGE, F_LFORATE, F_CUTOFF, F_RES, F_FTYPE, F_CIRCUIT, F_SLOPE24,
@@ -95,21 +95,16 @@ typedef char store_fits[sizeof(store_t) <= FW_STORE_MAX ? 1 : -1];
 #define ROUTE(l, j, f, fmt, lo, hi, st) {l, B_ROUTE, fmt, (uint16_t)((j) * sizeof(fm_route_t) + OFFSET(fm_route_t, f)), lo, hi, st}
 #define NONE {0, B_NONE, 0, 0, 0, 0, 0}
 #define TIME_MAX 5778
-#define HOME_LEVEL 4u
 
-/* HOME: one column per group, one row per oscillator (K1..K4 = A..D) */
-static const group_t G_HOME[] = {
-    {"Osc On", W_ALL, {OSCN("A", on, F_ONOFF, 0, 1, 1), OSCN("B", on, F_ONOFF, 0, 1, 1),
-                       OSCN("C", on, F_ONOFF, 0, 1, 1), OSCN("D", on, F_ONOFF, 0, 1, 1)}},
-    {"Coarse", W_ALL, {OSCN("Coarse", coarse, F_RATIO, 0, 48, 1), OSCN("Coarse", coarse, F_RATIO, 0, 48, 1),
-                       OSCN("Coarse", coarse, F_RATIO, 0, 48, 1), OSCN("Coarse", coarse, F_RATIO, 0, 48, 1)}},
-    {"Fine", W_ALL, {OSCN("Fine", fine, F_INT, 0, 1000, 1), OSCN("Fine", fine, F_INT, 0, 1000, 1),
-                     OSCN("Fine", fine, F_INT, 0, 1000, 1), OSCN("Fine", fine, F_INT, 0, 1000, 1)}},
-    {"Fixed", W_ALL, {OSCN("Fixed", fixed, F_ONOFF, 0, 1, 1), OSCN("Fixed", fixed, F_ONOFF, 0, 1, 1),
-                      OSCN("Fixed", fixed, F_ONOFF, 0, 1, 1), OSCN("Fixed", fixed, F_ONOFF, 0, 1, 1)}},
-    {"Level", W_ALL, {OSCN("Level", level, F_DB, -7000, 0, 50), OSCN("Level", level, F_DB, -7000, 0, 50),
-                      OSCN("Level", level, F_DB, -7000, 0, 50), OSCN("Level", level, F_DB, -7000, 0, 50)}},
-};
+/* HOME: two focus steps per oscillator row: its tuning (Coarse, Fine, Fixed), then its Level and on/off */
+#define OSCK(k, l, f, fmt, lo, hi, st) {l, (uint8_t)(B_OSC_A + (k)), fmt, OFFSET(fm_osc_t, f), lo, hi, st}
+#define HOME_ROW(k, name)                                                                                          \
+    {name " Tune", W_ALL, {OSCK(k, "Coarse", coarse, F_RATIO, 0, 48, 1), OSCK(k, "Fine", fine, F_INT, 0, 1000, 1),   \
+                           OSCK(k, "Fixed", fixed, F_ONOFF, 0, 1, 1), NONE}},                                       \
+    {name " Level", W_ALL, {OSCK(k, "Level", level, F_DB, -7000, 0, 50), OSCK(k, "Osc " name, on, F_ONOFF, 0, 1, 1), \
+                            NONE, NONE}}
+
+static const group_t G_HOME[] = {HOME_ROW(0, "A"), HOME_ROW(1, "B"), HOME_ROW(2, "C"), HOME_ROW(3, "D")};
 
 static const group_t G_OSC[] = {
     {"Tune", W_ALL, {OSC("Coarse", coarse, F_RATIO, 0, 48, 1), OSC("Fine", fine, F_INT, 0, 1000, 1),
@@ -378,8 +373,17 @@ static int group_visible(uint32_t pg, uint32_t g)
 }
 
 static const pdef_t P_SYNCED = LFO("Rate", rate_synced, F_BEAT, 0, 14, 1);
-static const pdef_t P_FREQ = OSCN("Freq", fixed_freq, F_HZ10, 100, 20000, 10);
-static const pdef_t P_MULTI = OSCN("Multi", fixed_multi, F_MULTI, 0, 5, 1);
+static const pdef_t P_FREQ[FM_OPS] = {OSCK(0, "Freq", fixed_freq, F_HZ10, 100, 20000, 10), OSCK(1, "Freq", fixed_freq, F_HZ10, 100, 20000, 10),
+                                      OSCK(2, "Freq", fixed_freq, F_HZ10, 100, 20000, 10), OSCK(3, "Freq", fixed_freq, F_HZ10, 100, 20000, 10)};
+static const pdef_t P_MULTI[FM_OPS] = {OSCK(0, "Multi", fixed_multi, F_MULTI, 0, 5, 1), OSCK(1, "Multi", fixed_multi, F_MULTI, 0, 5, 1),
+                                       OSCK(2, "Multi", fixed_multi, F_MULTI, 0, 5, 1), OSCK(3, "Multi", fixed_multi, F_MULTI, 0, 5, 1)};
+
+static uint32_t osc_of(const pdef_t *d, uint32_t col)
+{
+    if (d->base >= B_OSC_A)
+        return (uint32_t)(d->base - B_OSC_A) & 3u;
+    return d->base == B_OSCN ? col : object[PAGE_OSC];
+}
 
 /* as in Live, a fixed oscillator's Coarse and Fine become Freq and Multi */
 static const pdef_t *cell(uint32_t pg, uint32_t g, uint32_t col)
@@ -387,10 +391,10 @@ static const pdef_t *cell(uint32_t pg, uint32_t g, uint32_t col)
     const pdef_t *d = &PAGE_DEF[pg].g[g].p[col];
     if (!d->label)
         return 0;
-    if (d->base == B_OSCN && patch.osc[col].fixed && d->off == OFFSET(fm_osc_t, coarse))
-        return &P_FREQ;
-    if (d->base == B_OSCN && patch.osc[col].fixed && d->off == OFFSET(fm_osc_t, fine))
-        return &P_MULTI;
+    if (d->base >= B_OSC_A && patch.osc[osc_of(d, col)].fixed && d->off == OFFSET(fm_osc_t, coarse))
+        return &P_FREQ[osc_of(d, col)];
+    if (d->base >= B_OSC_A && patch.osc[osc_of(d, col)].fixed && d->off == OFFSET(fm_osc_t, fine))
+        return &P_MULTI[osc_of(d, col)];
     if (d->fmt == F_LFORATE && patch.lfo.range == LFO_SYNC)
         return &P_SYNCED;
     if (pg == PAGE_ENV && d->off == OFFSET(fm_env_t, end) && object[pg] < ENV_FILTER)
@@ -409,12 +413,11 @@ static fm_env_t *env_of(uint32_t e)
     return &patch.lfo.env;
 }
 
-static uint32_t osc_of(const pdef_t *d, uint32_t col) { return d->base == B_OSCN ? col : object[PAGE_OSC]; }
 
 static int16_t *field(const pdef_t *d, uint32_t col)
 {
     char *b = 0;
-    if (d->base == B_OSC || d->base == B_OSCN)
+    if (d->base == B_OSC || d->base == B_OSCN || d->base >= B_OSC_A)
         b = (char *)&patch.osc[osc_of(d, col)];
     if (d->base == B_ENV)
         b = (char *)env_of(object[PAGE_ENV]);
@@ -937,41 +940,39 @@ static void draw_algo(int32_t cx, int32_t base, int32_t bw, int32_t bh, int32_t 
     }
 }
 
-/* HOME: one oscillator per row, as the left half of Operator's shell */
+static void home_knob(const pdef_t *d, uint32_t k, int32_t cx, int focused, uint16_t bg)
+{
+    char v[24];
+    int32_t lo, hi, step;
+    prange(d, &lo, &hi, &step);
+    format_value(v, sizeof v, d, k);
+    text_center(cx, 1, &FONT_T, d->label, focused ? C_TEXT : C_LABEL, bg);
+    draw_knob(cx, 23, 10, pget(d, k), lo, hi, focused ? C_ORANGE : C_TEXT);
+    text_center(cx, 34, &FONT_T, v, focused ? C_BRIGHT : C_TEXT, bg);
+}
+
+/* HOME: one oscillator per row, as in Operator's shell: Coarse, Fine, Fixed, Level and the oscillator's square */
 static void draw_home_row(uint32_t k)
 {
     const fm_osc_t *o = &patch.osc[k];
     const uint32_t f = focus[PAGE_HOME];
-    const int carrier = (fm_algo_carriers(patch.main.algorithm) >> k) & 1u;
-    const uint16_t oc = o->on ? OP_COLOR[k] : C_OFF;
-    const int32_t bar_w = 70, bar_x = 164;
-    char v[24];
-    uint32_t c;
+    const int tune = f == 2u * k, level = f == 2u * k + 1u;
+    const uint16_t bg_tune = tune ? C_BODY_FOCUS : C_BODY, bg_level = level ? C_BODY_FOCUS : C_BODY;
+    const uint16_t sq = o->on ? OP_COLOR[k] : C_CONTROL;
     cv_begin(240, HOME_ROW_H, C_BODY);
+    cv_rect(0, 0, 144, HOME_ROW_H - 1, bg_tune);
+    cv_rect(144, 0, 96, HOME_ROW_H - 1, bg_level);
     cv_rect(0, HOME_ROW_H - 1, 240, 1, C_SEPARATOR);
-    cv_rect(6, 13, 22, 22, o->on ? OP_COLOR[k] : C_CONTROL);
-    text_center(17, 16, &FONT_M, OP_NAME[k], o->on ? C_INK : C_OFF, o->on ? OP_COLOR[k] : C_CONTROL);
-    if (f == 0u)
-        outline(4, 11, 26, 26, C_ORANGE);
-    for (c = 1; c <= 2u; c++) {
-        const pdef_t *d = cell(PAGE_HOME, c, k);
-        const int32_t cx = c == 1u ? 54 : 96;
-        int32_t lo, hi, step;
-        prange(d, &lo, &hi, &step);
-        format_value(v, sizeof v, d, k);
-        text_center(cx, 1, &FONT_T, d->label, f == c ? C_ORANGE : C_LABEL, C_BODY);
-        draw_knob(cx, 23, 10, pget(d, k), lo, hi, f == c ? C_ORANGE : C_TEXT);
-        text_center(cx, 34, &FONT_T, v, C_BRIGHT, C_BODY);
-    }
-    draw_toggle(119, 16, 38, 17, "Fixed", o->fixed != 0, C_ORANGE);
-    if (f == 3u)
-        outline(117, 14, 42, 21, C_ORANGE);
-    fmt_db(v, sizeof v, o->level, 0);
-    cv_text_on(bar_x, 3, &FONT_T, "Level", f == HOME_LEVEL ? C_ORANGE : C_LABEL, C_BODY);
-    cv_text_on(bar_x + bar_w - text_w(&FONT_T, v), 3, &FONT_T, v, C_BRIGHT, C_BODY);
-    cv_rect(bar_x, 20, bar_w, 7, C_CONTROL);
-    cv_rect(bar_x, 20, (clampi(o->level, -7000, 0) + 7000) * bar_w / 7000, 7, oc);
-    cv_text_on(bar_x, 30, &FONT_T, carrier ? "Carrier" : "Modulator", C_SCALE, C_BODY);
+    if (tune)
+        cv_rect(0, 0, 2, HOME_ROW_H - 1, C_ORANGE);
+    if (level)
+        cv_rect(144, 0, 2, HOME_ROW_H - 1, C_ORANGE);
+    home_knob(cell(PAGE_HOME, 2u * k, 0), k, 28, tune, bg_tune);
+    home_knob(cell(PAGE_HOME, 2u * k, 1), k, 74, tune, bg_tune);
+    draw_toggle(100, 16, 38, 17, "Fixed", o->fixed != 0, C_ORANGE);
+    home_knob(cell(PAGE_HOME, 2u * k + 1u, 0), k, 174, level, bg_level);
+    cv_rect(205, 12, 26, 24, sq);
+    text_center(218, 16, &FONT_M, OP_NAME[k], o->on ? C_INK : C_OFF, sq);
     cv_blit(0, (uint32_t)(HOME_Y + (int32_t)k * HOME_ROW_H));
 }
 
@@ -1474,7 +1475,6 @@ static void update_leds(void)
 
 static void app_init(void)
 {
-    focus[PAGE_HOME] = HOME_LEVEL;
     store_load();
     fm_init();
     preset_select(store[0].current < PRESETS_N ? store[0].current : 0u);
