@@ -85,6 +85,7 @@ OPERATOR is made by [npi3pak](https://github.com/npi3pak). It stands on the work
   layout; [MvaveFM1Unbricker](https://github.com/Quixotic7/MvaveFM1Unbricker).
 - **Charles Vestal**: [AMB-1](https://github.com/charlesvestal/fm1-amb), which showed the FPU in use on the FM-1.
 - **Dimitar Toshkov Zhekov**: the Terminus font (SIL OFL 1.1).
+- **IBM**: the IBM Plex Sans font (SIL OFL 1.1).
 - **JieLi Technology**: three AC79 SDK files in every package (Apache-2.0).
 
 ## License
@@ -98,6 +99,7 @@ The parts it is built from keep their licences and copyright notices:
 | Felucca platform: HAL, update loader, USB-MIDI, OTA, storage, tools (through ORBIT and SLOOP, modified) | Leo Kuroshita, Hügelton Instruments | GPL-3.0-only | [LICENSE](LICENSE) |
 | Web install protocol `fm1ota.js`, `fm1pkg.js` (from SLOOP 2.7, unchanged) | Leo Kuroshita, Hügelton Instruments; isod89 | GPL-3.0-only | [LICENSE](LICENSE) |
 | Terminus font (rasterised into the firmware) | Dimitar Toshkov Zhekov | SIL OFL 1.1 | [LICENSES/OFL-Terminus.txt](LICENSES/OFL-Terminus.txt) |
+| IBM Plex Sans font (rasterised into the firmware) | IBM Corp. | SIL OFL 1.1 | [LICENSES/OFL-IBM-Plex-Sans.txt](LICENSES/OFL-IBM-Plex-Sans.txt) |
 | Three AC79 SDK files in every package (`tools/sdk`, unmodified) | JieLi Technology | Apache-2.0 | [LICENSES/Apache-2.0-JieLi-SDK.txt](LICENSES/Apache-2.0-JieLi-SDK.txt) |
 
 Every release and the web installer carry these licence texts next to the packages, and each release's complete

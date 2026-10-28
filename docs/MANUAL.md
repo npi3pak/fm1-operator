@@ -14,13 +14,15 @@ Not affiliated with or endorsed by Ableton.
 
 ## The screen
 
+The screen is drawn like a Live device.
+
 | Part | What it shows |
 |---|---|
 | **Title bar** | The preset's name, its number (`U` for user slots) and `*` when it has unsaved changes |
-| **Header** | The page and what it edits: OSC B, FILTER ENV, MOD WHEEL. On the right, the focused group and its position (`TUNE 1/6`) |
-| **Display** | Three groups of four parameters. The focused group has an orange bar and orange values; K1–K4 edit it |
-| **Graph** | The algorithm, the waveform, the envelope, the LFO shape, the filter response or the output |
-| **Status line** | Voices sounding / voices available, octave, CPU load |
+| **HOME** | Four rows, one per oscillator (see below) |
+| **Display** (other pages) | At the top: what the page edits, the focused group (`Times 1/3`) and its graph: the waveform, the envelope, the LFO shape, the filter response, the algorithm or the output |
+| **Controls** | Below the display, three groups of four: dials, toggles and choosers. The focused group is lighter, with an orange bar and orange dials; K1–K4 edit it |
+| **Status line** | Algorithm, voices sounding / available, octave, CPU load |
 
 The oscillators keep Live's colours: A yellow, B cyan, C blue, D orange.
 
@@ -43,19 +45,17 @@ System combinations:
 
 ## Pages
 
-### HOME: the shell
+### HOME: the oscillators
 
-ALGO picks the algorithm (1–11). The graph draws it: modulators sit above the oscillators they modulate, and the
-carriers feed the line at the bottom. Each group holds one setting for all four oscillators:
+One row per oscillator, like the left half of Operator's shell:
+- **the oscillator's square**: lit when it is on;
+- **Coarse** and **Fine** dials, or **Freq** and **Multi** when the oscillator is fixed;
+- the **Fixed** toggle;
+- **Level**, with its bar and whether the oscillator is a carrier or a modulator.
 
-| Group | K1–K4 |
-|---|---|
-| LEVEL | Level of A, B, C, D |
-| COARSE | The frequency ratio (coarse and fine together) |
-| FINE | Fine |
-| WAVE | Waveform |
-| FEEDBACK | Feedback |
-| ON | Oscillator on/off |
+**SELECT** picks the column (On, Coarse, Fine, Fixed, Level); **K1–K4** set it for A, B, C and D. **ALGO** picks the
+algorithm (1–11) and shows it over the rows for a moment: modulators sit above the oscillators they modulate, and
+the carriers feed the line at the bottom. GLO shows it too.
 
 ### EDIT: one oscillator (ALGO: A–D)
 

@@ -42,6 +42,7 @@ Every file in this tree that carries an `SPDX-License-Identifier: GPL-3.0-only` 
 | SLOOP by isod89 (<https://github.com/isod89/sloop-fm1>), a fork of Felucca: the web install protocol (`fm1ota.js`, `fm1pkg.js`, unchanged from SLOOP 2.7), the stock supply levels at start | GPL-3.0-only | `web/fm1ota.js`, `web/fm1pkg.js`, `firmware/hal/fm1_sys.h` |
 | ChoralRoot by Quixotic7 (<https://github.com/Quixotic7/ChoralRootFM1>): the order of the audio interrupt's acknowledge (0.18); the release and Pages workflows follow its layout | GPL-3.0-only | `firmware/sys/audio.c`, `.github/workflows/` |
 | Terminus font by Dimitar Toshkov Zhekov: the UI text, rasterised into the firmware at build time (`tools/gen_font.py`) | SIL OFL 1.1 | `assets/fonts/ter-u16n.bdf`, `LICENSES/OFL-Terminus.txt` |
+| IBM Plex Sans (Medium) by IBM Corp.: the synth's labels and values, rasterised into the firmware at build time (`tools/gen_font.py`) | SIL OFL 1.1 | `assets/fonts/IBMPlexSans-Medium.ttf`, `LICENSES/OFL-IBM-Plex-Sans.txt` |
 | JieLi AC79 SDK by JieLi Technology: three of its files go into every `.fwsc` package (below) | Apache-2.0 | `tools/sdk/`, `LICENSES/Apache-2.0-JieLi-SDK.txt` |
 
 OPERATOR is inspired by Ableton Live's Operator instrument. It contains no Ableton code or material, and it is not

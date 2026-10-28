@@ -152,7 +152,7 @@ jobs:
 
           Install from the browser at https://npi3pak.github.io/fm1-operator/ (Chrome or Edge, the FM-1 connected by USB), or with the command-line installer: `python3 tools/fm1_install.py operator-@VERSION@.fwsc`.
 
-          `operator-@VERSION@.fwsc` is the package (48 kHz); `SHA256SUMS` lists its SHA-256. The package holds three JieLi AC79 SDK files (Apache-2.0); `LICENSE`, `LICENSING.md` and `LICENSES.zip` carry every licence (GPL-3.0-only; Terminus font, OFL 1.1; JieLi SDK files, Apache-2.0). The complete source of this release is the tag v@VERSION@.
+          `operator-@VERSION@.fwsc` is the package (48 kHz); `SHA256SUMS` lists its SHA-256. The package holds three JieLi AC79 SDK files (Apache-2.0); `LICENSE`, `LICENSING.md` and `LICENSES.zip` carry every licence (GPL-3.0-only; Terminus and IBM Plex Sans fonts, OFL 1.1; JieLi SDK files, Apache-2.0). The complete source of this release is the tag v@VERSION@.
 
           **Installing custom firmware is at your own risk.** OPERATOR is provided as is, without any warranty.
           EOT

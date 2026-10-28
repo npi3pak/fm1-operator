@@ -5,7 +5,7 @@
 """Render the bitmap fonts to a C header (assets/fonts/):
   S  labels / units / status   Latin-1 32..255 at 1x
   L  large values / titles     32..95 (digits, signs, capitals), the same glyphs at 2x
-Terminus 8x16 (BDF, SIL OFL 1.1). TTF fonts also work through render()
+Terminus 8x16 (BDF, SIL OFL 1.1); T and M: IBM Plex Sans Medium (TTF, SIL OFL 1.1). TTF fonts go through render()
 (anti-aliased, tabular figures via the OpenType `tnum` feature).
 
 Glyph format: per glyph an advance width, a bitmap width and an offset; the
@@ -22,7 +22,9 @@ FONTS = Path(__file__).resolve().parents[1] / "assets" / "fonts"
 # (name, file, px, scale, pixel, first, last): pixel fonts are rendered without
 # anti-aliasing at their design size and enlarged by an integer factor
 SIZES = [("S", "ter-u16n.bdf", 16, 1, True, 32, 255),   # Latin-1 (Hügelton needs the umlaut)
-         ("L", "ter-u16n.bdf", 16, 2, True, 32, 95)]   # values / titles: digits, signs, capitals
+         ("L", "ter-u16n.bdf", 16, 2, True, 32, 95),   # values / titles: digits, signs, capitals
+         ("T", "IBMPlexSans-Medium.ttf", 11, 1, False, 32, 255),   # OPERATOR: labels and values (anti-aliased)
+         ("M", "IBMPlexSans-Medium.ttf", 13, 1, False, 32, 255)]   # OPERATOR: the preset name
 PAD = 2
 
 
@@ -107,7 +109,7 @@ def render(ttf, px, scale, pixel, first, last):
     h = asc + desc - top
     glyphs = []
     for c in range(first, last + 1):
-        ch = chr(c)
+        ch = "?" if 127 <= c < 160 else chr(c)          # C1 controls: no glyph, drawn as '?'
         adv = int(round(font.getlength(ch, features=feats)))
         bw = adv + 2 * PAD
         img = Image.new("L", (bw, asc + desc), 0)

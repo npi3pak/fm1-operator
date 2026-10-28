@@ -98,4 +98,6 @@ midi 0x90 36 127
 frames 30
 midi 0x80 36 0
 frames 40
+
+screen build/host/out/preset_kick.ppm
 wav build/host/out/operator.wav

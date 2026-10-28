@@ -711,3 +711,19 @@ Decided:
 4. The Repeat partials, the Antialias switch, the filter circuits' character, the legacy filter types.
 5. Upload presets from the web page.
 6. Repaint the logo in Live's colours.
+
+### UI restyled after the first review (2026-10-28)
+
+**Feedback**: the UI was "beautiful, but not in the Ableton style at all".
+
+**HOME**
+- Grey device body, four rows of oscillators.
+- Each row: the oscillator square, a Coarse dial, a Fine dial, the Fixed toggle, Level with a bar.
+- A fixed oscillator shows Freq and Multi instead of Coarse and Fine, as in Live.
+- ALGO shows the algorithm over the rows.
+
+**The other pages**
+- The display with its graph is at the top: envelopes, LFO, filter, wave.
+- Below it are Live-style controls: dials with an arc, orange toggles, choosers.
+
+**Font**: IBM Plex Sans Medium (SIL OFL 1.1), 11 and 13 px, for labels, values and the name.
