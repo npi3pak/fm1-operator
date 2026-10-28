@@ -35,6 +35,7 @@ const float kTimeOctaves = 3.3219f;     // Time 100 %: envelopes 10x longer
 const float kKeyScaleDb = 6.0f;         // level < key 100 %: dB per octave from C3
 const float kRouteOctaves = 4.0f;       // a routing 100 % to a frequency or a rate
 const float kLfoSpan = 10.550747f;      // log2(1500): Low 0.02 .. 30 Hz, High 8 Hz .. 12 kHz
+const float kSilent = 0.001f;           // a voice below -60 dBFS that cannot rise again is freed
 
 const float FIXED_MULTI[6] = {0.0001f, 0.001f, 0.01f, 0.1f, 1.0f, 10.0f};
 // beat lengths in quarter notes for Repeat (envelopes) and the synced LFO rate
@@ -363,6 +364,25 @@ bool voice_sounding(const Voice& v, uint8_t carriers, const fm_patch_t* p) {
             return true;
     }
     return false;
+}
+
+// Every carrier is below kSilent at the output and none can come back: no attack or loop under way, no loop, beat
+// or sync mode while the key is held, and a sustain that is silent too. Long releases end there, not at -70 dB.
+bool voice_silent(const Voice& v, const fm_patch_t* p, const Shared& s, const float* target, float volume) {
+    for (uint32_t k = 0; k < FM_OPS; k++) {
+        const fm_osc_t& o = p->osc[k];
+        const Env& e = v.env[k];
+        const int mode = o.env.loop_mode;
+        if (!((s.carriers >> k) & 1u) || !o.on)
+            continue;
+        if (target[k] * volume > kSilent || e.stage == ST_ATTACK || e.stage == ST_LOOP)
+            return false;
+        if (v.gate && (mode == LOOP_LOOP || mode == LOOP_BEAT || mode == LOOP_SYNC))
+            return false;
+        if (e.stage == ST_DECAY && s.level[k] * db_gain(static_cast<float>(o.env.sustain) * 0.01f) * volume > kSilent)
+            return false;
+    }
+    return true;
 }
 
 void voice_start(Voice* v, uint8_t note, uint8_t velocity, const fm_patch_t* p) {
@@ -776,7 +796,7 @@ void render_voice(Voice* v, const fm_patch_t* p, const fm_global_t* g, const Sha
     }
     for (uint32_t k = 0; k < FM_OPS; k++)
         v->core[1].gain[k] = v->spread ? v->core[1].gain[k] : v->core[0].gain[k];
-    v->active = voice_sounding(*v, s.carriers, p) ? 1 : 0;
+    v->active = voice_sounding(*v, s.carriers, p) && !voice_silent(*v, p, s, target, volume) ? 1 : 0;
 }
 
 void render_block(const fm_patch_t* p, const fm_global_t* g) {
