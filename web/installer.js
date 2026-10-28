@@ -114,7 +114,7 @@ const progress = (total) => (k, a) => {
 
 const wakeLock = async () => {
     try {
-        return await navioperator.wakeLock?.request("screen");
+        return await navigator.wakeLock?.request("screen");
     } catch (_) {
         return null;
     }
@@ -134,7 +134,7 @@ const explain = (e, isStock) => {
 };
 
 const run = async (pkg, isStock) => {
-    const midi = await navioperator.requestMIDIAccess({ sysex: true }).catch(() => null);
+    const midi = await navigator.requestMIDIAccess({ sysex: true }).catch(() => null);
     if (!midi) {
         say("denied", "", "bad");
         return;
@@ -222,7 +222,7 @@ const main = async () => {
         e.preventDefault();
         e.returnValue = MSG.leave;
     });
-    if (!navioperator.requestMIDIAccess) {
+    if (!navigator.requestMIDIAccess) {
         say("nomidi", "", "bad");
         return;
     }
