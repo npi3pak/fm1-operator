@@ -17,6 +17,13 @@ knob SELECT 4
 knob K2 30
 frames 10
 screen build/host/out/page_osc.ppm
+knob SELECT -10
+frames 1
+knob SELECT 1
+frames 1
+knob K1 20
+frames 10
+screen build/host/out/page_osc_env.ppm
 btn ENV down
 frames 1
 btn ENV up
@@ -43,7 +50,7 @@ frames 10
 screen build/host/out/page_filter.ppm
 midi 0xB0 74 30
 midi 0xB0 71 100
-midi 0xB0 73 127
+midi 0xB0 102 127
 midi 0xB0 65 127
 midi 0xB0 99 127
 frames 10

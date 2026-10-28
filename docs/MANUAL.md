@@ -68,11 +68,15 @@ they modulate, and the carriers feed the line at the bottom. GLO shows it too.
 | Group | K1 | K2 | K3 | K4 |
 |---|---|---|---|---|
 | TUNE | Coarse | Fine | Level | Wave |
+| ENVELOPE | Attack | Decay | Sustain | Release |
 | FIXED | Fixed on | Frequency | Multiplier | Feedback |
 | PHASE | Phase | Retrigger | Osc<Vel | Q (quantised) |
 | SCALE | Level<Vel | Level<Key | LFO on | Pitch env on |
 | PARTIALS | Partial number | Its amplitude | 16/32/64 | Repeat |
 | PARTIALS+ | Normalize | | | |
+
+**Envelope**: every oscillator has its own volume envelope. With ENVELOPE focused the display shows it; its other
+settings (levels, loop modes) are on the ENV page.
 
 **Ratios**: coarse 0 means 0.5, otherwise 1–48; fine adds thousandths.
 
@@ -84,6 +88,10 @@ Noise White, and User. The numbers count the harmonics.
 **Feedback**: works only on an oscillator that no other oscillator modulates.
 
 ### ENV: an envelope (ALGO: A, B, C, D, FILTER, PITCH, LFO)
+
+Seven separate envelopes: one per oscillator, plus the filter, pitch and LFO envelopes. The tabs at the top of the
+display show which one ALGO picked. EDIT and ENV follow each other: the oscillator picked on one is the envelope
+shown on the other.
 
 | Group | K1 | K2 | K3 | K4 |
 |---|---|---|---|---|
@@ -210,10 +218,7 @@ change. 0–127 spans the parameter's whole range. A toggle is on from 64. The o
 | 65 | Glide | off / on |
 | 70 | Tone | 0 … 100 % |
 | 71 | Filter Resonance | 0 … 1.25 |
-| 72 | Release of the envelopes A–D | 0.1 ms … 60 s |
-| 73 | Attack of the envelopes A–D | 0.1 ms … 60 s |
 | **74** | **Filter Frequency (cutoff)** | 30 Hz … 18.5 kHz |
-| 75 | Decay of the envelopes A–D | 0.1 ms … 60 s |
 | 76 | LFO Rate | the whole range of the LFO's Range |
 | 77 | LFO Amount | 0 … 100 % |
 | 78 | Filter Envelope amount | −100 … 100 % |
@@ -222,5 +227,9 @@ change. 0–127 spans the parameter's whole range. A toggle is on from 64. The o
 | 81 | Shaper Dry/Wet | 0 … 100 % |
 | 82 | Time | −100 … 100 % |
 | 83 | Pitch Envelope amount | −100 … 100 % |
+| 102, 103, 104, 105 | Attack of envelope A, B, C, D | 0.1 ms … 60 s |
+| 106, 107, 108, 109 | Decay of envelope A, B, C, D | 0.1 ms … 60 s |
+| 110, 111, 112, 113 | Sustain of envelope A, B, C, D | −inf … 0 dB |
+| 114, 115, 116, 117 | Release of envelope A, B, C, D | 0.1 ms … 60 s |
 
-CC 72, 73 and 75 set the same time on all four oscillator envelopes, the way a synth's ADSR controls do.
+Each oscillator has its own envelope, so each has its own four CCs (102–117). CC 72, 73 and 75 are not used.

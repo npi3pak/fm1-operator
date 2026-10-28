@@ -31,7 +31,7 @@ same options. It is an independent project, not affiliated with or endorsed by A
 - LFO up to audio rate, pitch envelope, filter (LP, HP, BP, notch, morph; 12 / 24 dB) and waveshaper
 - up to 6 voices (presets keep Operator's 1–32), Spread (a stereo voice pair), glide, MIDI routing for velocity,
   key, aftertouch, pitch bend and the mod wheel
-- a read-only preset bank in the firmware and user slots in flash; USB-MIDI and TRS MIDI in, 36 CCs mapped to parameters (CC 74 = cutoff); 48 kHz audio
+- a read-only preset bank in the firmware and user slots in flash; USB-MIDI and TRS MIDI in, 49 CCs mapped to parameters (CC 74 = cutoff); 48 kHz audio
 
 ![The pages](docs/img/operator-pages.png)
 

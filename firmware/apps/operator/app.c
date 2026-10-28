@@ -51,7 +51,7 @@
 #define C_INK RGB(0x07, 0x07, 0x07)
 
 enum { PAGE_HOME, PAGE_OSC, PAGE_ENV, PAGE_LFO, PAGE_FILTER, PAGE_PITCH, PAGE_GLOBAL, PAGE_SAVE, PAGES };
-enum { B_NONE, B_OSC, B_OSCN, B_ENV, B_FILTER, B_LFO, B_PITCH, B_MAIN, B_ROUTE, B_DEV, B_HARM_SEL, B_HARM, B_OSC_A };
+enum { B_NONE, B_OSC, B_OSCN, B_ENV, B_FILTER, B_LFO, B_PITCH, B_MAIN, B_ROUTE, B_DEV, B_HARM_SEL, B_HARM, B_OSCENV, B_OSC_A };
 enum {
     F_INT, F_ONOFF, F_DB, F_TIME, F_RATIO, F_WAVE, F_HZ10, F_MULTI, F_PCT, F_PCTU, F_INDEX, F_HARM, F_PARTIALS,
     F_ENVLVL, F_LOOP, F_BEAT, F_SLOPE, F_LFOTYPE, F_RANGE, F_LFORATE, F_CUTOFF, F_RES, F_FTYPE, F_CIRCUIT, F_SLOPE24,
@@ -86,6 +86,7 @@ typedef char store_fits[sizeof(store_t) <= FW_STORE_MAX ? 1 : -1];
 
 #define OSC(l, f, fmt, lo, hi, st) {l, B_OSC, fmt, OFFSET(fm_osc_t, f), lo, hi, st}
 #define OSCN(l, f, fmt, lo, hi, st) {l, B_OSCN, fmt, OFFSET(fm_osc_t, f), lo, hi, st}
+#define OENV(l, f, fmt, lo, hi, st) {l, B_OSCENV, fmt, OFFSET(fm_env_t, f), lo, hi, st}
 #define ENV(l, f, fmt, lo, hi, st) {l, B_ENV, fmt, OFFSET(fm_env_t, f), lo, hi, st}
 #define FIL(l, f, fmt, lo, hi, st) {l, B_FILTER, fmt, OFFSET(fm_filter_t, f), lo, hi, st}
 #define LFO(l, f, fmt, lo, hi, st) {l, B_LFO, fmt, OFFSET(fm_lfo_t, f), lo, hi, st}
@@ -110,6 +111,8 @@ static const group_t G_HOME[] = {HOME_ROW(3, "D"), HOME_ROW(2, "C"), HOME_ROW(1,
 static const group_t G_OSC[] = {
     {"Tune", W_ALL, {OSC("Coarse", coarse, F_RATIO, 0, 48, 1), OSC("Fine", fine, F_INT, 0, 1000, 1),
                      OSC("Level", level, F_DB, -7000, 0, 50), OSC("Wave", wave, F_WAVE, 0, 22, 1)}},
+    {"Envelope", W_ALL, {OENV("Attack", attack, F_TIME, 0, TIME_MAX, 10), OENV("Decay", decay, F_TIME, 0, TIME_MAX, 10),
+                         OENV("Sustain", sustain, F_ENVLVL, 0, 0, 0), OENV("Release", release, F_TIME, 0, TIME_MAX, 10)}},
     {"Fixed", W_ALL, {OSC("Fixed", fixed, F_ONOFF, 0, 1, 1), OSC("Freq", fixed_freq, F_HZ10, 100, 20000, 10),
                       OSC("Multi", fixed_multi, F_MULTI, 0, 5, 1), OSC("Feedback", feedback, F_PCTU, 0, 1000, 10)}},
     {"Phase", W_ALL, {OSC("Phase", phase, F_PCTU, 0, 1000, 10), OSC("Retrig", retrigger, F_ONOFF, 0, 1, 1),
@@ -215,28 +218,28 @@ static const char *const DST_NAME[FM_DESTS] = {"Off", "Osc Vol A", "Osc Vol B", 
                                                "Filter Q", "Filter Res", "Morph", "Flt Drive", "Filter Env",
                                                "Shp Drive", "LFO Rate", "LFO Amt", "Pitch Env", "Volume", "Pan",
                                                "Tone", "Time"};
-/* MIDI CC -> preset parameter: 0..127 spread linearly over lo..hi (a toggle: on from 64); n fields `stride` apart */
+/* MIDI CC -> preset parameter: 0..127 spread linearly over lo..hi (a toggle: on from 64) */
 typedef struct {
-    uint8_t cc, n;
-    uint16_t off, stride;
+    uint8_t cc;
+    uint16_t off;
     int16_t lo, hi;
 } ccmap_t;
 
-#define CC(cc, f, lo, hi) {cc, 1, OFFSET(fm_patch_t, f), 0, lo, hi}
+#define CC(cc, f, lo, hi) {cc, OFFSET(fm_patch_t, f), lo, hi}
 #define CC_OSC(cc, f, lo, hi) CC(cc, osc[0].f, lo, hi), CC(cc + 1, osc[1].f, lo, hi), CC(cc + 2, osc[2].f, lo, hi), \
                               CC(cc + 3, osc[3].f, lo, hi)
-#define CC_ENVS(cc, f, lo, hi) {cc, FM_OPS, OFFSET(fm_patch_t, osc[0].env.f), sizeof(fm_osc_t), lo, hi}
 
 static const ccmap_t CC_MAP[] = {
     CC(5, main.glide_time, 0, 5000),       CC(7, main.volume, -7000, 0),      CC(10, main.pan, -1000, 1000),
     CC(14, main.algorithm, 0, FM_ALGOS - 1), CC(15, main.spread, 0, 1000),
     CC_OSC(16, level, -7000, 0),           CC_OSC(20, coarse, 0, 48),         CC_OSC(24, fine, 0, 1000),
     CC_OSC(28, feedback, 0, 1000),         CC(65, main.glide, 0, 1),          CC(70, main.tone, 0, 1000),
-    CC(71, filter.res, 0, 1250),           CC_ENVS(72, release, 0, TIME_MAX), CC_ENVS(73, attack, 0, TIME_MAX),
-    CC(74, filter.freq, 2251, 13372),      CC_ENVS(75, decay, 0, TIME_MAX),   CC(76, lfo.rate, 0, 1270),
+    CC(71, filter.res, 0, 1250),           CC(74, filter.freq, 2251, 13372),  CC(76, lfo.rate, 0, 1270),
     CC(77, lfo.amount, 0, 1000),           CC(78, filter.env_amount, -1000, 1000), CC(79, filter.drive, 0, 2400),
     CC(80, filter.shaper_drive, -1200, 1200), CC(81, filter.shaper_wet, 0, 1000), CC(82, main.time, -1000, 1000),
     CC(83, pitch.env_amount, -1000, 1000),
+    CC_OSC(102, env.attack, 0, TIME_MAX),  CC_OSC(106, env.decay, 0, TIME_MAX), CC_OSC(110, env.sustain, -7000, 0),
+    CC_OSC(114, env.release, 0, TIME_MAX),
 };
 
 static const uint32_t MULTI_DIV[6] = {10000u, 1000u, 100u, 10u, 1u, 1u};
@@ -447,6 +450,8 @@ static int16_t *field(const pdef_t *d, uint32_t col)
         b = (char *)&patch.osc[osc_of(d, col)];
     if (d->base == B_ENV)
         b = (char *)env_of(object[PAGE_ENV]);
+    if (d->base == B_OSCENV)
+        b = (char *)&patch.osc[object[PAGE_OSC]].env;
     if (d->base == B_FILTER)
         b = (char *)&patch.filter;
     if (d->base == B_LFO)
@@ -495,7 +500,7 @@ static void prange(const pdef_t *d, int32_t *lo, int32_t *hi, int32_t *step)
     *hi = d->hi;
     *step = d->step;
     if (d->fmt == F_ENVLVL)
-        env_range(object[PAGE_ENV], lo, hi, step);
+        env_range(d->base == B_OSCENV ? object[PAGE_OSC] : object[PAGE_ENV], lo, hi, step);
 }
 
 static int pset(const pdef_t *d, uint32_t col, int32_t v)
@@ -655,7 +660,7 @@ static void format_value(char *b, uint32_t size, const pdef_t *d, uint32_t col)
 {
     const int32_t v = pget(d, col);
     const char *name = list_name(d->fmt, v);
-    const uint32_t env = object[PAGE_ENV];
+    const uint32_t env = d->base == B_OSCENV ? object[PAGE_OSC] : object[PAGE_ENV];
     b[0] = 0;
     if (name) {
         str_cpy(b, name, size);
@@ -1196,6 +1201,28 @@ static void lcd_name(char *b, uint32_t size)
         str_cpy(b, SOURCE_NAME[obj], size);
 }
 
+static int osc_env_focused(void)
+{
+    return visible_count(PAGE_OSC) && PAGE_DEF[PAGE_OSC].g[visible_group(PAGE_OSC, focus[PAGE_OSC])].p[0].base == B_OSCENV;
+}
+
+/* every envelope is its own: the tabs show which one ALGO picked */
+static void draw_env_tabs(void)
+{
+    static const char *const TAB[FM_ENVS] = {"A", "B", "C", "D", "Filter", "Pitch", "LFO"};
+    const uint16_t color[FM_ENVS] = {OP_COLOR[0], OP_COLOR[1], OP_COLOR[2], OP_COLOR[3], C_ORANGE, C_CYAN, C_PINK};
+    int32_t x = 4;
+    uint32_t e;
+    for (e = 0; e < FM_ENVS; e++) {
+        const int32_t w = text_w(&FONT_T, TAB[e]);
+        const int on = e == object[PAGE_ENV];
+        cv_text_on(x, 1, &FONT_T, TAB[e], on ? color[e] : C_OFF, C_LCD);
+        if (on)
+            cv_rect(x, 13, w, 1, color[e]);
+        x += w + 7;
+    }
+}
+
 /* the display above the controls: what the page edits, the focused group, the graph */
 static void draw_lcd(void)
 {
@@ -1208,7 +1235,10 @@ static void draw_lcd(void)
         return;
     }
     lcd_name(b, sizeof b);
-    cv_text_on(4, 1, &FONT_T, b, object_color(), C_LCD);
+    if (page == PAGE_ENV)
+        draw_env_tabs();
+    if (page != PAGE_ENV)
+        cv_text_on(4, 1, &FONT_T, b, object_color(), C_LCD);
     if (page == PAGE_OSC)
         cv_text_on(8 + text_w(&FONT_T, b), 1, &FONT_T,
                    (fm_algo_carriers(patch.main.algorithm) >> object[page]) & 1u ? "Carrier" : "Modulator", C_SCALE, C_LCD);
@@ -1223,8 +1253,10 @@ static void draw_lcd(void)
         cv_text_on(LCD_W - 4 - text_w(&FONT_T, b), 1, &FONT_T, b, C_SCALE, C_LCD);
     }
     cv_oy = LCD_TOP;
-    if (page == PAGE_OSC)
+    if (page == PAGE_OSC && !osc_env_focused())
         draw_wave();
+    if (page == PAGE_OSC && osc_env_focused())
+        draw_envelope(object[PAGE_OSC], OP_COLOR[object[PAGE_OSC]]);
     if (page == PAGE_ENV)
         draw_envelope(object[PAGE_ENV], object_color());
     if (page == PAGE_LFO)
@@ -1398,14 +1430,13 @@ static void handle_keys(const fw_input_t *in)
 
 static int midi_cc(uint32_t cc, uint32_t v)
 {
-    uint32_t i, j;
+    uint32_t i;
     for (i = 0; i < FW_NELEM(CC_MAP); i++) {
         const ccmap_t *c = &CC_MAP[i];
         const int32_t x = c->hi == 1 ? (v >= 64u) : c->lo + ((c->hi - c->lo) * (int32_t)v + 63) / 127;
         if (c->cc != cc)
             continue;
-        for (j = 0; j < c->n; j++)
-            *(int16_t *)((char *)&patch + c->off + j * c->stride) = (int16_t)x;
+        *(int16_t *)((char *)&patch + c->off) = (int16_t)x;
         return 1;
     }
     return 0;
@@ -1464,6 +1495,10 @@ static void handle_page_knobs(const fw_input_t *in)
     }
     if (objects && in->knob[FW_KNOB_ALGO]) {
         object[page] = (uint8_t)clampi((int32_t)object[page] + in->knob[FW_KNOB_ALGO], 0, (int32_t)objects - 1);
+        if (page == PAGE_OSC)
+            object[PAGE_ENV] = object[PAGE_OSC];
+        if (page == PAGE_ENV && object[PAGE_ENV] < FM_OPS)
+            object[PAGE_OSC] = object[PAGE_ENV];
         focus[page] = (uint8_t)clampi(focus[page], 0, (int32_t)visible_count(page) - 1);
         dirty = D_ALL & ~FW_BIT(D_FRAME);
     }
