@@ -41,6 +41,13 @@ frames 1
 btn FX up
 frames 10
 screen build/host/out/page_filter.ppm
+midi 0xB0 74 30
+midi 0xB0 71 100
+midi 0xB0 73 127
+midi 0xB0 65 127
+midi 0xB0 99 127
+frames 10
+screen build/host/out/page_filter_cc.ppm
 btn SCL down
 frames 1
 btn SCL up

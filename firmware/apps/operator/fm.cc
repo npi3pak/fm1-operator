@@ -35,6 +35,7 @@ const float kTimeOctaves = 3.3219f;     // Time 100 %: envelopes 10x longer
 const float kKeyScaleDb = 6.0f;         // level < key 100 %: dB per octave from C3
 const float kRouteOctaves = 4.0f;       // a routing 100 % to a frequency or a rate
 const float kLfoSpan = 10.550747f;      // log2(1500): Low 0.02 .. 30 Hz, High 8 Hz .. 12 kHz
+const float kGainMax = 16.0f;           // +24 dB per oscillator, three modulators and feedback stay below 128 cycles
 const float kSilent = 0.001f;           // a voice below -60 dBFS that cannot rise again is freed
 
 const float FIXED_MULTI[6] = {0.0001f, 0.001f, 0.01f, 0.1f, 1.0f, 10.0f};
@@ -183,10 +184,8 @@ inline float table_at(const int16_t* t, uint32_t phase, bool interp) {
     return (a + (static_cast<float>(t[i + 1]) - a) * f) * (1.0f / 32768.0f);
 }
 
-inline uint32_t cycles_phase(float c) {
-    const float frac = c - static_cast<float>(floor_int(c));
-    return static_cast<uint32_t>(frac * 16777215.0f) << 8;
-}
+// |c| < 128: the operators' gain is capped at kGainMax
+inline uint32_t cycles_phase(float c) { return static_cast<uint32_t>(static_cast<int32_t>(c * 16777216.0f)) << 8; }
 
 // ---- waveforms (built in the main loop: fm_init runs before the audio starts)
 
@@ -700,19 +699,23 @@ void render_voice(Voice* v, const fm_patch_t* p, const fm_global_t* g, const Sha
     const float lfo_amt = l.on ? unit(l.amount) * v->env[ENV_LFO].value * gain_mod(bus, DST_LFO_AMOUNT) *
                                      std::max(0.0f, av >= 0.0f ? 1.0f - av * (1.0f - v->velocity) : 1.0f + av * v->velocity)
                                : 0.0f;
-    for (uint32_t i = 0; i < kBlock; i++) {
-        v->lfo_phase += lfo_inc;
+    // per sample only in the High range (8 Hz .. 12 kHz); Low and Sync (at most 30 Hz, a few at Sync) once a block
+    const bool audio_lfo = l.on && l.range == LFO_HIGH;
+    const uint32_t lfo_n = audio_lfo ? kBlock : 1u;
+    const float lfo_step = audio_lfo ? lfo_inc : lfo_inc * static_cast<float>(kBlock);
+    for (uint32_t i = 0; i < lfo_n; i++) {
+        v->lfo_phase += lfo_step;
         if (v->lfo_phase >= 1.0f) {
-            v->lfo_phase -= 1.0f;
+            v->lfo_phase -= static_cast<float>(floor_int(v->lfo_phase));
             v->lfo_hold = rand_bipolar(&v->rng);
         }
-        lfo[i] = l.on ? lfo_shape(v, l.type, lfo_hz) * lfo_amt : 0.0f;
+        lfo[i] = l.on ? lfo_shape(v, l.type, audio_lfo ? lfo_hz : lfo_hz * static_cast<float>(kBlock)) * lfo_amt : 0.0f;
     }
-    v->lfo_last = lfo[kBlock - 1];
+    v->lfo_last = lfo[lfo_n - 1];
 
     float pm[kBlock];
     const float lfo_pitch = unit(l.amount_a) * kLfoPitchSemis * (1.0f / 12.0f);
-    for (uint32_t i = 0; i < kBlock; i++)
+    for (uint32_t i = 0; i < lfo_n; i++)
         pm[i] = l.on ? fast_exp2(lfo[i] * lfo_pitch) : 1.0f;
 
     Filter f;
@@ -734,8 +737,10 @@ void render_voice(Voice* v, const fm_patch_t* p, const fm_global_t* g, const Sha
         const float vel = std::max(0.0f, vs >= 0.0f ? 1.0f - vs * (1.0f - v->velocity) : 1.0f + vs * v->velocity);
         const float key = db_gain(unit(o.key_scale) * note_oct * kKeyScaleDb);
         const bool carrier = (s.carriers >> k) & 1u;
-        target[k] = s.level[k] * s.user_gain[k] * v->env[k].value * vel * key * gain_mod(bus, DST_VOL_A + static_cast<int>(k)) *
-                    xfade[k] * (carrier ? 1.0f : fm_drive);
+        // at most +24 dB: keeps the phase modulation inside cycles_phase's range
+        target[k] = std::min(s.level[k] * s.user_gain[k] * v->env[k].value * vel * key *
+                                 gain_mod(bus, DST_VOL_A + static_cast<int>(k)) * xfade[k] * (carrier ? 1.0f : fm_drive),
+                             kGainMax);
         const float coarse = o.coarse <= 0 ? 0.5f : static_cast<float>(o.coarse);
         float r = o.coarse <= 0 ? 0.5f * (1.0f + unit(o.fine)) : coarse + unit(o.fine);
         r *= 1.0f + unit(o.vel_coarse) * v->velocity;
@@ -757,33 +762,62 @@ void render_voice(Voice* v, const fm_patch_t* p, const fm_global_t* g, const Sha
         const float detune = c ? -spread : spread;
         uint32_t inc[FM_OPS];
         float inc_f[FM_OPS], dg[FM_OPS], fb[FM_OPS];
+        // Only the oscillators that reach the output: a carrier or a modulator of one, not silent for the whole
+        // block (an oscillator at -inf or with its envelope at -inf is exactly 0). Modulators come after the
+        // oscillators they modulate, so one pass from A finds them; render from D down.
+        uint8_t live = 0;
+        for (uint32_t k = 0; k < FM_OPS; k++) {
+            uint8_t feeds = 0;
+            for (uint32_t i = 0; i < k; i++)
+                feeds |= (live >> i) & (s.mods[i] >> k) & 1u;
+            const bool heard = ((s.carriers >> k) & 1u) || feeds;
+            live |= heard && (target[k] != 0.0f || core->gain[k] != 0.0f) ? 1u << k : 0u;
+        }
+        int ops[FM_OPS];
+        uint32_t n_ops = 0;
+        for (int k = FM_OPS - 1; k >= 0; k--) {
+            if ((live >> k) & 1u)
+                ops[n_ops++] = k;
+        }
+        bool noise[FM_OPS], wobble[FM_OPS];
         for (uint32_t k = 0; k < FM_OPS; k++) {
             const fm_osc_t& o = p->osc[k];
             const float bend = (o.pitch_on ? penv_osc : 0.0f) + detune;
             const float hz = o.fixed ? static_cast<float>(o.fixed_freq) * 0.1f * FIXED_MULTI[clampi(o.fixed_multi, 0, 5)] *
                                            semis_ratio(bend) * fixed_mod
                                      : 440.0f * semis_ratio(base + bend - 69.0f) * ratio[k];
+            const bool lfo_k = o.lfo_on && l.on;
+            wobble[k] = lfo_k && audio_lfo;
             inc_f[k] = clampf(hz, 0.0f, kFs * 0.499f) * (4294967296.0f / kFs);
-            inc[k] = static_cast<uint32_t>(inc_f[k]);
+            inc[k] = static_cast<uint32_t>(lfo_k && !audio_lfo ? clampf(inc_f[k] * pm[0], 0.0f, 2147483647.0f) : inc_f[k]);
             dg[k] = (target[k] - core->gain[k]) * (1.0f / static_cast<float>(kBlock));
             fb[k] = ((s.unmodulated >> k) & 1u) ? clampf(s.feedback[k] + feedback_mod * kFeedbackCycles, 0.0f, 2.0f) : 0.0f;
+            noise[k] = p->osc[k].wave == WAVE_NOISE_WHITE;
+            if ((live >> k) & 1u)
+                continue;
+            // a silent oscillator keeps its phase running, so it comes back where it would have been
+            core->phase[k] += inc[k] * kBlock;
+            for (uint32_t i = 0; wobble[k] && i < kBlock; i++)
+                core->phase[k] += static_cast<uint32_t>(clampf(inc_f[k] * pm[i], 0.0f, 2147483647.0f)) - inc[k];
+            core->gain[k] = target[k];
+            core->out[k] = 0.0f;
+            core->prev[k] = 0.0f;
         }
         const float l_gain = v->spread && c == 1 ? 0.0f : volume * clampf(1.0f - pan, 0.0f, 1.0f);
         const float r_gain = v->spread && c == 0 ? 0.0f : volume * clampf(1.0f + pan, 0.0f, 1.0f);
         for (uint32_t i = 0; i < kBlock; i++) {
             float mix = 0.0f;
-            for (int k = FM_OPS - 1; k >= 0; k--) {
+            for (uint32_t n = 0; n < n_ops; n++) {
+                const int k = ops[n];
                 const uint8_t mods = s.mods[k];
                 float m = fb[k] * (core->out[k] + core->prev[k]) * 0.5f;
                 for (int j = k + 1; j < FM_OPS; j++)
                     m += (mods >> j) & 1u ? core->out[j] * kModCycles : 0.0f;
                 core->tone[k] += (m - core->tone[k]) * tone;
-                const bool lfo_on = p->osc[k].lfo_on && l.on;
-                core->phase[k] += lfo_on ? static_cast<uint32_t>(clampf(inc_f[k] * pm[i], 0.0f, 2147483647.0f)) : inc[k];
+                core->phase[k] += wobble[k] ? static_cast<uint32_t>(clampf(inc_f[k] * pm[i], 0.0f, 2147483647.0f)) : inc[k];
                 core->gain[k] += dg[k];
-                const float w = p->osc[k].wave == WAVE_NOISE_WHITE
-                                    ? rand_bipolar(&core->rng)
-                                    : table_at(s.table[k], core->phase[k] + cycles_phase(core->tone[k]), s.interp);
+                const float w = noise[k] ? rand_bipolar(&core->rng)
+                                         : table_at(s.table[k], core->phase[k] + cycles_phase(core->tone[k]), s.interp);
                 core->prev[k] = core->out[k];
                 core->out[k] = w * core->gain[k];
                 mix += (s.carriers >> k) & 1u ? core->out[k] : 0.0f;
@@ -793,6 +827,9 @@ void render_voice(Voice* v, const fm_patch_t* p, const fm_global_t* g, const Sha
             out_l[i] += y * l_gain;
             out_r[i] += y * r_gain;
         }
+        // a fade to -inf lands on 0, not 1e-9, so the oscillator can be skipped from the next block
+        for (uint32_t k = 0; k < FM_OPS; k++)
+            core->gain[k] = target[k] == 0.0f ? 0.0f : core->gain[k];
     }
     for (uint32_t k = 0; k < FM_OPS; k++)
         v->core[1].gain[k] = v->spread ? v->core[1].gain[k] : v->core[0].gain[k];

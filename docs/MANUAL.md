@@ -181,9 +181,46 @@ fraction of a second while the flash is written.
 
 ## MIDI
 
-USB-MIDI and TRS MIDI IN (3.5 mm):
-- notes with velocity;
-- pitch bend;
-- mod wheel (CC 1);
-- channel aftertouch;
-- All Notes Off (CC 120 / 123).
+USB-MIDI and TRS MIDI IN (3.5 mm). The channel is GLO → DEVICE → MIDI Ch (Omni or 1–16).
+
+| Message | Action |
+|---|---|
+| Note On / Note Off | Notes with velocity |
+| Pitch bend | Pitch, by the preset's PB Range; a MIDI source on GLO |
+| Channel aftertouch | A MIDI source on GLO |
+| CC 1 (mod wheel) | A MIDI source on GLO |
+| CC 120, CC 123 | All notes off |
+
+### Control change
+
+A CC sets the parameter of the current preset, as if a knob turned it: the title shows `*` and SAVE keeps the
+change. 0–127 spans the parameter's whole range. A toggle is on from 64. The other CCs are ignored.
+
+| CC | Parameter | Range |
+|---|---|---|
+| 5 | Glide Time | 0.1 ms … 10 s |
+| 7 | Volume | −inf … 0 dB |
+| 10 | Pan | left … right |
+| 14 | Algorithm | 1 … 11 |
+| 15 | Spread | 0 … 100 % |
+| 16, 17, 18, 19 | Level of A, B, C, D | −inf … 0 dB |
+| 20, 21, 22, 23 | Coarse of A, B, C, D | 0.5 … 48 |
+| 24, 25, 26, 27 | Fine of A, B, C, D | 0 … 1000 |
+| 28, 29, 30, 31 | Feedback of A, B, C, D | 0 … 100 % |
+| 65 | Glide | off / on |
+| 70 | Tone | 0 … 100 % |
+| 71 | Filter Resonance | 0 … 1.25 |
+| 72 | Release of the envelopes A–D | 0.1 ms … 60 s |
+| 73 | Attack of the envelopes A–D | 0.1 ms … 60 s |
+| **74** | **Filter Frequency (cutoff)** | 30 Hz … 18.5 kHz |
+| 75 | Decay of the envelopes A–D | 0.1 ms … 60 s |
+| 76 | LFO Rate | the whole range of the LFO's Range |
+| 77 | LFO Amount | 0 … 100 % |
+| 78 | Filter Envelope amount | −100 … 100 % |
+| 79 | Filter Drive | 0 … 24 dB |
+| 80 | Shaper Drive | −12 … 12 dB |
+| 81 | Shaper Dry/Wet | 0 … 100 % |
+| 82 | Time | −100 … 100 % |
+| 83 | Pitch Envelope amount | −100 … 100 % |
+
+CC 72, 73 and 75 set the same time on all four oscillator envelopes, the way a synth's ADSR controls do.

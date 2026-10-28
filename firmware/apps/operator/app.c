@@ -215,6 +215,30 @@ static const char *const DST_NAME[FM_DESTS] = {"Off", "Osc Vol A", "Osc Vol B", 
                                                "Filter Q", "Filter Res", "Morph", "Flt Drive", "Filter Env",
                                                "Shp Drive", "LFO Rate", "LFO Amt", "Pitch Env", "Volume", "Pan",
                                                "Tone", "Time"};
+/* MIDI CC -> preset parameter: 0..127 spread linearly over lo..hi (a toggle: on from 64); n fields `stride` apart */
+typedef struct {
+    uint8_t cc, n;
+    uint16_t off, stride;
+    int16_t lo, hi;
+} ccmap_t;
+
+#define CC(cc, f, lo, hi) {cc, 1, OFFSET(fm_patch_t, f), 0, lo, hi}
+#define CC_OSC(cc, f, lo, hi) CC(cc, osc[0].f, lo, hi), CC(cc + 1, osc[1].f, lo, hi), CC(cc + 2, osc[2].f, lo, hi), \
+                              CC(cc + 3, osc[3].f, lo, hi)
+#define CC_ENVS(cc, f, lo, hi) {cc, FM_OPS, OFFSET(fm_patch_t, osc[0].env.f), sizeof(fm_osc_t), lo, hi}
+
+static const ccmap_t CC_MAP[] = {
+    CC(5, main.glide_time, 0, 5000),       CC(7, main.volume, -7000, 0),      CC(10, main.pan, -1000, 1000),
+    CC(14, main.algorithm, 0, FM_ALGOS - 1), CC(15, main.spread, 0, 1000),
+    CC_OSC(16, level, -7000, 0),           CC_OSC(20, coarse, 0, 48),         CC_OSC(24, fine, 0, 1000),
+    CC_OSC(28, feedback, 0, 1000),         CC(65, main.glide, 0, 1),          CC(70, main.tone, 0, 1000),
+    CC(71, filter.res, 0, 1250),           CC_ENVS(72, release, 0, TIME_MAX), CC_ENVS(73, attack, 0, TIME_MAX),
+    CC(74, filter.freq, 2251, 13372),      CC_ENVS(75, decay, 0, TIME_MAX),   CC(76, lfo.rate, 0, 1270),
+    CC(77, lfo.amount, 0, 1000),           CC(78, filter.env_amount, -1000, 1000), CC(79, filter.drive, 0, 2400),
+    CC(80, filter.shaper_drive, -1200, 1200), CC(81, filter.shaper_wet, 0, 1000), CC(82, main.time, -1000, 1000),
+    CC(83, pitch.env_amount, -1000, 1000),
+};
+
 static const uint32_t MULTI_DIV[6] = {10000u, 1000u, 100u, 10u, 1u, 1u};
 static const uint32_t POW2[101] = {
     65536, 65992, 66451, 66913, 67378, 67847, 68319, 68794, 69273, 69755, 70240, 70728, 71220, 71716, 72214, 72717,
@@ -1372,6 +1396,21 @@ static void handle_keys(const fw_input_t *in)
     }
 }
 
+static int midi_cc(uint32_t cc, uint32_t v)
+{
+    uint32_t i, j;
+    for (i = 0; i < FW_NELEM(CC_MAP); i++) {
+        const ccmap_t *c = &CC_MAP[i];
+        const int32_t x = c->hi == 1 ? (v >= 64u) : c->lo + ((c->hi - c->lo) * (int32_t)v + 63) / 127;
+        if (c->cc != cc)
+            continue;
+        for (j = 0; j < c->n; j++)
+            *(int16_t *)((char *)&patch + c->off + j * c->stride) = (int16_t)x;
+        return 1;
+    }
+    return 0;
+}
+
 static void handle_midi(void)
 {
     fw_midi_t m;
@@ -1389,6 +1428,8 @@ static void handle_midi(void)
             fm_controller(SRC_WHEEL, m.d2);
         if (kind == 0xB0u && (m.d1 == 120u || m.d1 == 123u))
             fm_all_notes_off();
+        if (kind == 0xB0u && midi_cc(m.d1, m.d2))
+            dirty |= D_ROWS | FW_BIT(D_LCD) | FW_BIT(D_STATUS);
         if (kind == 0xD0u)
             fm_controller(SRC_AFTERTOUCH, m.d1);
         if (kind == 0xE0u)
