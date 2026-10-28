@@ -1,0 +1,10 @@
+{"name": "Spread Pad",
+ "main": {"algorithm": 10, "voices": 9, "volume": -1600, "spread": 800},
+ "filter": {"on": 1, "freq": 8900, "res": 200, "env_amount": 200, "lfo_on": 1,
+            "env": {"attack": 4300, "decay": 4500, "sustain": 400, "release": 4300}},
+ "lfo": {"on": 1, "type": 2, "rate": 500, "amount": 300},
+ "osc": [
+  {"level": -300, "wave": 7, "env": {"attack": 3900, "decay": 4000, "sustain": 0, "release": 4300}},
+  {"level": -600, "wave": 7, "fine": 4, "env": {"attack": 3900, "decay": 4000, "sustain": 0, "release": 4300}},
+  {"level": -900, "wave": 14, "coarse": 2, "fine": 3, "env": {"attack": 4000, "decay": 4000, "sustain": 0, "release": 4300}},
+  {"level": -1800, "wave": 19, "coarse": 0, "env": {"attack": 4100, "decay": 4000, "sustain": 0, "release": 4300}}]}

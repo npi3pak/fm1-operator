@@ -156,12 +156,14 @@ def build_cxx():
 
 
 def generate():
-    """generated headers (font, tables)"""
+    """generated headers (font, tables, and the app's own: firmware/apps/APP/gen.py GEN_DIR)"""
     GEN.mkdir(parents=True, exist_ok=True)
     tools = SRC / "tools"
     cmds = [[tools / "gen_font.py", GEN / "felucca_font.h"],
             [tools / "gen_tables.py", GEN / "fw_tables.h", "48" if FS48 else "44"],
             [tools / "gen_logo.py", GEN / "fw_logo.h", app_dir() / "logo.png", "--preview", GEN / "logo.png"]]
+    if (app_dir() / "gen.py").exists():
+        cmds.append([app_dir() / "gen.py", GEN])
     procs = [subprocess.Popen([sys.executable, *map(str, c)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                               text=True) for c in cmds]
     failed = []

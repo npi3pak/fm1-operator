@@ -1,0 +1,7 @@
+{"name": "Noise Hat",
+ "main": {"algorithm": 10, "voices": 3, "volume": -1400},
+ "filter": {"on": 1, "type": 1, "freq": 12000, "res": 300, "freq_key": 0},
+ "osc": [
+  {"level": 0, "wave": 21, "vel_scale": 600, "env": {"decay": 3000, "sustain": -7000, "release": 2900, "loop_mode": 4}},
+  {"level": -1200, "fixed": 1, "fixed_freq": 8400, "fixed_multi": 4, "wave": 18, "env": {"decay": 2700, "sustain": -7000, "release": 2600, "loop_mode": 4}},
+  {"on": 0}, {"on": 0}]}

@@ -17,20 +17,23 @@
   <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-GPL--3.0--only-blue"></a>
 </p>
 
-OPERATOR turns the M-VAVE FM-1 into a polyphonic FM synth, inspired by Ableton Live's Operator: four sine
-operators, a choice of algorithms that route them into each other, and an envelope for every operator. It is an
-independent project, not affiliated with or endorsed by Ableton.
+OPERATOR turns the M-VAVE FM-1 into a polyphonic FM synth, inspired by Ableton Live's Operator and built to carry
+its presets over: the same four oscillators, algorithms, envelopes, LFO, pitch envelope, filter and shaper, with the
+same options. It is an independent project, not affiliated with or endorsed by Ableton.
 
 > [!NOTE]
-> Early days: this is the project's boilerplate. The engine is a plain 4-operator FM voice and the interface a
-> first sketch; the concept is still being worked out.
+> Early days: the engine and the pages are in place but not yet heard on the hardware, the algorithm routings are
+> provisional, and the depths of several modulations still have to be matched to the original by ear.
 
-- 4 operators (A–D) with coarse / fine ratio, level and an ADSR envelope each
-- 11 algorithms, feedback on operator D
-- 4 voices, 16 presets in flash, USB-MIDI and TRS MIDI in, pitch bend
-- 48 kHz audio
+- 4 oscillators (A–D), 23 waveforms (sine, saws, squares, triangle, noise) and user partials, fixed frequency,
+  feedback, phase; 11 algorithms
+- 7 envelopes (4 oscillators, filter, pitch, LFO) with Loop, Beat, Sync and Trigger modes, the global Time
+- LFO up to audio rate, pitch envelope, filter (LP, HP, BP, notch, morph; 12 / 24 dB) and waveshaper
+- up to 32 voices (fewer when the CPU runs short), Spread (a stereo voice pair), glide, MIDI routing for velocity,
+  key, aftertouch, pitch bend and the mod wheel
+- a read-only preset bank in the firmware and user slots in flash; USB-MIDI and TRS MIDI in; 48 kHz audio
 
-![The pages(docs/img/operator-pages.png)
+![The pages](docs/img/operator-pages.png)
 
 > [!WARNING]
 > **Installing custom firmware is at your own risk.** OPERATOR is unofficial firmware, provided as is, without any

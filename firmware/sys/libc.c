@@ -58,7 +58,7 @@ static void str_cpy(char *d, const char *s, unsigned max)
     d[i] = 0;
 }
 
-/* decimal with an optional fixed point: fmt_fix(buf, -63, 1) -> "-6.3" */
+/* decimal with an optional fixed point: fmt_fix(buf, -63, 1) -> "-6.3", fmt_fix(buf, 5, 2) -> "0.05" */
 static void fmt_fix(char *b, int32_t v, int decimals)
 {
     char t[12];
@@ -69,7 +69,7 @@ static void fmt_fix(char *b, int32_t v, int decimals)
         u /= 10u;
         if (n == decimals)
             t[n++] = '.';
-    } while (u || n <= decimals);
+    } while (u || (decimals && n <= decimals + 1));
     if (neg)
         t[n++] = '-';
     for (i = 0; i < n; i++)

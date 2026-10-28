@@ -8,9 +8,20 @@ platform cut down from dspaudio/orbit (GPL-3.0-only), the same platform as npi3p
   selects one (default `operator`; `demo` is the small example). The logo is drawn in canvas strips (LCD DMA reads RAM only).
 - C is built without FPU (generic, as ORBIT); C++ with `-mcpu=r3 -mfprev1`. Cross the boundary with ints/pointers only.
   No static constructors (build fails on `.init_array`).
-- The app: `app.c` (pages, presets, input) and `fm.cc` / `fm.h` (the engine, float). The engine is a boilerplate:
-  4 sine operators, 4 voices, the algorithm table `MODS` / `CARRIERS` in `fm.cc` is provisional (a modulator always has
-  a higher index than its target: operators render D -> A). The concept is still being decided with the user.
+- The goal is preset compatibility with Live's Operator: `fm_patch_t` (`fm.h`) holds every Operator parameter in
+  its own units (time codes, cB, pct * 10, unit * 1000, cents), even those the engine only approximates.
+  `project analize.md` is the analysis (sources, enum orders, what is a guess).
+- The app: `app.c` (pages of 4-parameter groups: SELECT moves the focus, ALGO picks the object; the title bar shows
+  the preset; storage) and `fm.cc` (the engine, float, 16-frame blocks, up to `FM_VOICES_MAX` voices, Spread renders
+  a second "core" per voice). Provisional, to be checked against Live: the algorithm table `MODS` / `CARRIERS`
+  (a modulator always has a higher index than its target: D renders first), and the depth constants at the top of
+  `fm.cc` (marked "calibrated by ear against Live later").
+- Presets: `tools/oppreset.py` converts .adv (and our JSON) to fm.h's units; `firmware/apps/operator/gen.py` builds
+  `build/gen/op_bank.h` (the read-only bank) from `presets/bank.txt` (`OP_BANK=list` overrides it for local tests).
+  Never commit or ship Ableton's factory presets; they may be converted locally to test the engine.
+  User slots: `store_t` in app.c, `USER_PER_SLOT` presets per storage slot; bump `STORE_VERSION` when `fm_patch_t`
+  changes.
+- C has no float: the display converts with integer tables (`pow2m`); the engine's own maths stays in fm.cc.
 - Do not use Ableton's name or logo in the product's look; in texts say "inspired by Ableton Live's Operator" and
   "not affiliated with or endorsed by Ableton".
 - The sample rate lives in `firmware/sys/fw_rate.h` only (C, C++ and the HAL clock bit); 48 kHz is the default and the only
@@ -25,10 +36,7 @@ platform cut down from dspaudio/orbit (GPL-3.0-only), the same platform as npi3p
   `python tools/sim.py` (ASan/UBSan, fatal: a non-zero exit is a finding). Host results say nothing about timing.
 - `sys/audio.c` acknowledges the ALNK half before rendering (ChoralRoot 0.18, heard on hardware); OTA sets
   `fw_audio_hold` so the app does not render; `fm1_cstart` raises the supplies to stock (SLOOP 2.7). Keep these.
-- The envelope's times: `env_time_us` (app.c, integer table) and `env_seconds` (fm.cc) are the same curve
-  (1 ms * 10^(4 v/1000)); change both.
-- Presets: `bank_t` in app.c, `BANK_MAGIC` / `BANK_VERSION`; `fm_patch_t` is saved as is, so bump `BANK_VERSION`
-  (or migrate) when its layout changes.
+- Time codes: 0.1 ms * 10^(v / 1000) in both fm.cc (`time_secs`) and app.c (`fmt_time`); change both.
 - Web installer: `web/` (fm1ota.js / fm1pkg.js are SLOOP 2.7's, vendored unchanged; the page and installer.js are
   ours, English only, dark). `web/make_site.py [--release build/release-X.Y]` -> `build/site`;
   `node web/test_web.mjs PKG` is the protocol test.

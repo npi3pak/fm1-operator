@@ -1,0 +1,9 @@
+{"name": "Stack Bass",
+ "main": {"algorithm": 0, "voices": 0, "volume": -900, "glide": 1, "glide_time": 2700},
+ "filter": {"on": 1, "freq": 7900, "res": 300, "env_amount": 350, "freq_key": 500,
+            "env": {"decay": 3500, "sustain": 200, "release": 2700}},
+ "osc": [
+  {"level": 0, "env": {"decay": 4000, "sustain": -600, "release": 2800}},
+  {"level": -1000, "feedback": 300, "env": {"decay": 3500, "sustain": -1800, "release": 2800}},
+  {"level": -1800, "coarse": 2, "env": {"decay": 3000, "sustain": -7000, "release": 2800}},
+  {"on": 0}]}

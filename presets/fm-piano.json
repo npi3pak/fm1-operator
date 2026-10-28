@@ -1,0 +1,8 @@
+{"name": "FM Piano",
+ "main": {"algorithm": 6, "voices": 7, "volume": -1200},
+ "filter": {"on": 0},
+ "osc": [
+  {"level": 0, "vel_scale": 300, "env": {"decay": 4500, "sustain": -7000, "release": 3300}},
+  {"level": -1300, "vel_scale": 800, "env": {"decay": 3900, "sustain": -7000, "release": 3300}},
+  {"level": -300, "coarse": 1, "fine": 3, "vel_scale": 300, "env": {"decay": 4300, "sustain": -7000, "release": 3300}},
+  {"level": -2200, "coarse": 14, "vel_scale": 900, "key_scale": -300, "env": {"decay": 3100, "sustain": -7000, "release": 2700}}]}

@@ -1,0 +1,8 @@
+{"name": "Fixed Kick",
+ "main": {"algorithm": 0, "voices": 3, "volume": -600},
+ "filter": {"on": 0},
+ "pitch": {"on": 1, "amount_a": 1000, "env": {"attack": 0, "initial": 2400, "peak": 2400, "decay": 2900, "sustain": 0, "end": 0}},
+ "osc": [
+  {"level": 0, "fixed": 1, "fixed_freq": 500, "fixed_multi": 4, "pitch_on": 1, "env": {"decay": 3600, "sustain": -7000, "release": 3000, "loop_mode": 4}},
+  {"level": -1600, "fixed": 1, "fixed_freq": 1200, "fixed_multi": 4, "pitch_on": 1, "env": {"decay": 2400, "sustain": -7000, "release": 2400, "loop_mode": 4}},
+  {"on": 0}, {"on": 0}]}

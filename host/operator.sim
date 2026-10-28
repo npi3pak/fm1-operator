@@ -1,20 +1,20 @@
-# a chord on the default preset, then every page
+# a chord on the default preset, then every page; presets, MIDI, save
 frames 70
 key 7 down
 key 11 down
 key 14 down
 frames 40
-screen build/host/out/page_main.ppm
-knob SELECT 2
-knob ALGO 30
+screen build/host/out/page_home.ppm
+knob ALGO 4
+knob SELECT 3
 frames 10
 screen build/host/out/page_algo.ppm
 btn EDIT down
 frames 1
 btn EDIT up
-knob SELECT 1
-knob K1 2
-knob K2 10
+knob ALGO 1
+knob SELECT 4
+knob K2 30
 frames 10
 screen build/host/out/page_osc.ppm
 btn ENV down
@@ -23,27 +23,79 @@ btn ENV up
 knob K3 -10
 frames 10
 screen build/host/out/page_env.ppm
+knob ALGO 4
+knob SELECT 3
+frames 10
+screen build/host/out/page_env_filter.ppm
 key 7 up
 key 11 up
 key 14 up
 frames 60
+btn LFO down
+frames 1
+btn LFO up
+frames 10
+screen build/host/out/page_lfo.ppm
+btn FX down
+frames 1
+btn FX up
+frames 10
+screen build/host/out/page_filter.ppm
+btn SCL down
+frames 1
+btn SCL up
+frames 10
+screen build/host/out/page_pitch.ppm
 btn GLO down
 frames 1
 btn GLO up
-frames 10
+key 9 down
+frames 20
 screen build/host/out/page_global.ppm
+key 9 up
+knob ALGO 5
+frames 10
+screen build/host/out/page_route.ppm
 btn SAVE down
 frames 1
 btn SAVE up
+knob K2 3
 frames 10
 screen build/host/out/page_save.ppm
 btn HOME down
 frames 1
 btn HOME up
+knob PRESET 1
+frames 10
 midi 0x90 60 120
-frames 30
+midi 0x90 64 90
+frames 40
+screen build/host/out/preset_piano.ppm
 midi 0xE0 0 96
+midi 0xB0 1 100
 frames 20
 midi 0x80 60 0
+midi 0x80 64 0
 frames 60
+knob PRESET 4
+frames 5
+midi 0x90 48 120
+midi 0x90 55 100
+midi 0x90 60 100
+frames 80
+screen build/host/out/preset_pad.ppm
+midi 0xB0 123 0
+frames 120
+knob PRESET 1
+frames 5
+midi 0x90 42 127
+frames 20
+midi 0x80 42 0
+frames 20
+knob PRESET 1
+frames 5
+midi 0x90 36 127
+frames 30
+midi 0x80 36 0
+frames 40
 wav build/host/out/operator.wav

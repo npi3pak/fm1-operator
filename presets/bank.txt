@@ -1,0 +1,10 @@
+# The read-only presets compiled into the firmware, in this order (tools/oppreset.py reads .adv and .json).
+# Only presets we may distribute: our own, or ones whose authors agreed. Not Ableton's library.
+init.json
+fm-piano.json
+glass-bell.json
+stack-bass.json
+soft-brass.json
+spread-pad.json
+noise-hat.json
+fixed-kick.json

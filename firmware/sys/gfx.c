@@ -110,13 +110,19 @@ static uint32_t glyph(const felucca_font_t *f, uint32_t ch)
     return ch - f->first;
 }
 
-/* text, alpha-blended onto black with colour c; returns the end x */
-static int32_t cv_text(int32_t x, int32_t y, const felucca_font_t *f, const char *s, uint16_t c)
+static uint32_t blend_ch(uint32_t from, uint32_t to, uint32_t a)
+{
+    return (from * (15u - a) + to * a) / 15u;
+}
+
+/* text, alpha-blended onto the background bg with colour c; returns the end x */
+static int32_t cv_text_on(int32_t x, int32_t y, const felucca_font_t *f, const char *s, uint16_t c, uint16_t bg)
 {
     uint16_t ramp[16];
-    uint32_t r = c >> 11, g = (c >> 5) & 63u, b = c & 31u, a;
+    uint32_t a;
     for (a = 0; a < 16u; a++)
-        ramp[a] = (uint16_t)(((r * a / 15u) << 11) | ((g * a / 15u) << 5) | (b * a / 15u));
+        ramp[a] = (uint16_t)((blend_ch(bg >> 11, c >> 11, a) << 11) | (blend_ch((bg >> 5) & 63u, (c >> 5) & 63u, a) << 5) |
+                             blend_ch(bg & 31u, c & 31u, a));
     for (; *s; s++) {
         uint32_t gi = glyph(f, (uint8_t)*s), gx, gy, w, bpr;
         const uint8_t *gd;
@@ -133,6 +139,12 @@ static int32_t cv_text(int32_t x, int32_t y, const felucca_font_t *f, const char
         x += f->adv[gi];
     }
     return x;
+}
+
+/* text, alpha-blended onto black with colour c; returns the end x */
+static int32_t cv_text(int32_t x, int32_t y, const felucca_font_t *f, const char *s, uint16_t c)
+{
+    return cv_text_on(x, y, f, s, c, C_BLACK);
 }
 
 static int32_t text_w(const felucca_font_t *f, const char *s)

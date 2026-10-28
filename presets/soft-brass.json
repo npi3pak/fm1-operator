@@ -1,0 +1,10 @@
+{"name": "Soft Brass",
+ "main": {"algorithm": 1, "voices": 7, "volume": -1100, "spread": 300},
+ "filter": {"on": 1, "freq": 9600, "res": 150, "env_amount": 250, "freq_key": 700,
+            "env": {"attack": 2900, "decay": 3800, "sustain": 500, "release": 3000}},
+ "lfo": {"on": 1, "rate": 820, "amount": 60, "env": {"attack": 3800, "initial": -7000, "peak": 0}},
+ "osc": [
+  {"level": 0, "env": {"attack": 2700, "decay": 4000, "sustain": -200, "release": 3200}},
+  {"level": -800, "feedback": 200, "env": {"attack": 2900, "decay": 3700, "sustain": -1200, "release": 3000}},
+  {"level": -2000, "coarse": 2, "env": {"attack": 2500, "decay": 3300, "sustain": -2400, "release": 3000}},
+  {"level": -2600, "coarse": 3, "env": {"attack": 2500, "decay": 3300, "sustain": -3000, "release": 3000}}]}
